@@ -24,9 +24,13 @@ import static org.sonatype.nexus.repository.cache.CacheControllerHolder.METADATA
  */
 public enum AssetKind
 {
-  // @todo Change these enums as needed for this format
-  PACKAGES(METADATA),
-  ARCHIVE(CONTENT);
+  DISCOVERY(METADATA),
+  MODULES(METADATA),
+  MODULE_VERSIONS(METADATA),
+  PROVIDERS(METADATA),
+  PROVIDER_VERSIONS(METADATA),
+  PROVIDER_VERSION(METADATA),
+  PROVIDER_ARCHIVE(CONTENT);
 
   private final CacheType cacheType;
 

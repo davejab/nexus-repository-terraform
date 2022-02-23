@@ -44,12 +44,12 @@ public class TerraformPathUtilsTest
     when(state.getTokens()).thenReturn(tokens);
   }
 
-  @Test
-  public void buildAssetPath() {
-    String result = underTest.buildAssetPath(state, TerraformPathUtils.PACKAGE_FILENAME);
+  // @Test
+  // public void buildAssetPath() {
+  //   String result = underTest.buildAssetPath(state, TerraformPathUtils.PACKAGE_FILENAME);
 
-    assertThat(result, is(equalTo("/myTokenValue/myPackageFilename.txt")));
-  }
+  //   assertThat(result, is(equalTo("/myTokenValue/myPackageFilename.txt")));
+  // }
 
   private Map<String, String> setupTokens(final String tokenValue) {
     Map<String, String> tokens = new HashMap<>();

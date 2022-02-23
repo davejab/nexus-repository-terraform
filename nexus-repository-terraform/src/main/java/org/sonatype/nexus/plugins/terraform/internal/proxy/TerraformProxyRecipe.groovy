@@ -89,7 +89,15 @@ class TerraformProxyRecipe
     addBrowseUnsupportedRoute(builder)
 
     // @todo Add matcher methods to this list
-    [packageTerraformMatcher(), assetTerraformMatcher()].each { matcher ->
+    [
+      discoveryMatcher(), 
+      modulesMatcher(), 
+      moduleVersionsMatcher(), 
+      providersMatcher(),
+      providerVersionsMatcher(),
+      providerVersionMatcher(),
+      providerArchiveMatcher()
+    ].each { matcher ->
       builder.route(new Route.Builder().matcher(matcher)
           .handler(timingHandler)
           .handler(securityHandler)

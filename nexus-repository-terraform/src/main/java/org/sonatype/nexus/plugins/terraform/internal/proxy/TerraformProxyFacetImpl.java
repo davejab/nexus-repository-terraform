@@ -13,6 +13,8 @@
 package org.sonatype.nexus.plugins.terraform.internal.proxy;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,6 +23,7 @@ import javax.inject.Named;
 
 import org.sonatype.nexus.plugins.terraform.internal.AssetKind;
 import org.sonatype.nexus.plugins.terraform.internal.util.TerraformDataAccess;
+import org.sonatype.nexus.plugins.terraform.internal.util.TerraformDataUtils;
 import org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils;
 import org.sonatype.nexus.repository.cache.CacheInfo;
 import org.sonatype.nexus.repository.config.Configuration;
@@ -41,8 +44,6 @@ import org.sonatype.nexus.repository.view.payloads.TempBlob;
 import org.sonatype.nexus.transaction.UnitOfWork;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.ASSET_FILENAME;
-import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.PACKAGE_FILENAME;
 import static org.sonatype.nexus.repository.storage.AssetEntityAdapter.P_ASSET_KIND;
 
 /**
@@ -59,12 +60,15 @@ public class TerraformProxyFacetImpl
 
   private TerraformDataAccess terraformDataAccess;
 
+  private TerraformDataUtils terraformDataUtils;
+
   @Inject
   public TerraformProxyFacetImpl(final TerraformPathUtils terraformPathUtils,
                              final TerraformDataAccess terraformDataAccess)
   {
     this.terraformPathUtils = checkNotNull(terraformPathUtils);
     this.terraformDataAccess = checkNotNull(terraformDataAccess);
+    this.terraformDataUtils = new TerraformDataUtils();
   }
 
   // HACK: Workaround for known CGLIB issue, forces an Import-Package for org.sonatype.nexus.repository.config
@@ -79,10 +83,20 @@ public class TerraformProxyFacetImpl
     AssetKind assetKind = context.getAttributes().require(AssetKind.class);
     TokenMatcher.State matcherState = terraformPathUtils.matcherState(context);
     switch (assetKind) {
-      case PACKAGES:
-        return getAsset(terraformPathUtils.buildAssetPath(matcherState, PACKAGE_FILENAME));
-      case ARCHIVE:
-        return getAsset(terraformPathUtils.buildAssetPath(matcherState, ASSET_FILENAME));
+      case DISCOVERY:
+        return getAsset(terraformPathUtils.discoveryPath(matcherState));
+      case MODULES:
+        return getAsset(terraformPathUtils.modulesPath(matcherState));
+      case MODULE_VERSIONS:
+        return getAsset(terraformPathUtils.moduleVersionsPath(matcherState));
+      case PROVIDERS:
+        return getAsset(terraformPathUtils.providersPath(matcherState));
+      case PROVIDER_VERSION:
+        return getAsset(terraformPathUtils.providerVersionPath(matcherState));
+      case PROVIDER_VERSIONS:
+        return getAsset(terraformPathUtils.providerVersionsPath(matcherState));
+      case PROVIDER_ARCHIVE:
+        return getAsset(terraformPathUtils.providerArchivePath(matcherState));
       default:
         throw new IllegalStateException("Received an invalid AssetKind of type: " + assetKind.name());
     }
@@ -104,14 +118,20 @@ public class TerraformProxyFacetImpl
     AssetKind assetKind = context.getAttributes().require(AssetKind.class);
     TokenMatcher.State matcherState = terraformPathUtils.matcherState(context);
     switch (assetKind) {
-      case PACKAGES:
-        return putMetadata(content,
-            assetKind,
-            terraformPathUtils.buildAssetPath(matcherState, PACKAGE_FILENAME));
-      case ARCHIVE:
-        return putTerraformPackage(content,
-            assetKind,
-            terraformPathUtils.buildAssetPath(matcherState, ASSET_FILENAME));
+      case DISCOVERY:
+        return putTerraformPackage(content, assetKind, terraformPathUtils.discoveryPath(matcherState));
+      case MODULES:
+        return putTerraformPackage(content, assetKind, terraformPathUtils.modulesPath(matcherState));
+      case MODULE_VERSIONS:
+        return putTerraformPackage(content, assetKind, terraformPathUtils.moduleVersionsPath(matcherState));
+      case PROVIDERS:
+        return putTerraformPackage(content, assetKind, terraformPathUtils.providersPath(matcherState));
+      case PROVIDER_VERSIONS:
+        return putTerraformPackage(content, assetKind, terraformPathUtils.providerVersionsPath(matcherState));
+      case PROVIDER_VERSION:
+        return putTerraformPackage(content, assetKind, terraformPathUtils.providerVersionPath(matcherState));
+      case PROVIDER_ARCHIVE:
+        return putTerraformPackage(content, assetKind, terraformPathUtils.providerArchivePath(matcherState));
       default:
         throw new IllegalStateException("Received an invalid AssetKind of type: " + assetKind.name());
     }
@@ -171,20 +191,20 @@ public class TerraformProxyFacetImpl
     Bucket bucket = tx.findBucket(getRepository());
 
     Asset asset = terraformDataAccess.findAsset(tx, bucket, assetPath);
-
-    if (assetKind.equals(AssetKind.ARCHIVE)) {
-      if (asset == null) {
-        asset = tx.createAsset(bucket, component);
-        asset.name(assetPath);
-        asset.formatAttributes().set(P_ASSET_KIND, assetKind.name());
-      }
-    } else {
+    // @todo
+//    if (assetKind.equals(AssetKind.PROVIDER_ARCHIVE)) {
+//      if (asset == null) {
+//        asset = tx.createAsset(bucket, component);
+//        asset.name(assetPath);
+//        asset.formatAttributes().set(P_ASSET_KIND, assetKind.name());
+//      }
+//    } else {
       if (asset == null) {
         asset = tx.createAsset(bucket, getRepository().getFormat());
         asset.name(assetPath);
         asset.formatAttributes().set(P_ASSET_KIND, assetKind.name());
       }
-    }
+//    }
 
     return terraformDataAccess.saveAsset(tx, asset, tempBlob, content);
   }
@@ -209,6 +229,33 @@ public class TerraformProxyFacetImpl
     log.debug("Updating cacheInfo of {} to {}", asset, cacheInfo);
     CacheInfo.applyToAsset(asset, cacheInfo);
     tx.saveAsset(asset);
+  }
+
+  @Override
+  protected Content fetch(String url, Context context, Content stale) throws IOException {
+    AssetKind assetKind = context.getAttributes().require(AssetKind.class);
+    TokenMatcher.State matcherState = terraformPathUtils.matcherState(context);
+    switch (assetKind) {
+      case PROVIDER_VERSION:
+        ArrayList<Content> downloads = new ArrayList<>();
+        for(Entry os : terraformDataUtils.getPlatformMap().entrySet()) {
+          for (String arch: (String[])os.getValue()) {
+            String downloadUrl = terraformPathUtils
+                    .toProviderVersionDownloadPath(url, (String)os.getKey(), arch, matcherState);
+            downloads.add(super.fetch(downloadUrl, context, stale));
+          }   
+        }  
+        return terraformDataUtils.providerVersionJson(downloads);
+      case PROVIDER_VERSIONS:
+        url = terraformPathUtils.toProviderVersionsPath(url, matcherState);
+        return terraformDataUtils.providerVersionsJson(super.fetch(url, context, stale));
+      case PROVIDER_ARCHIVE:
+        String downloadInfoUrl = terraformPathUtils.toProviderArchiveDownloadPath(url, matcherState);
+        String downloadUrl = terraformDataUtils.getDownloadUrl(super.fetch(downloadInfoUrl, context, stale));
+        return super.fetch(downloadUrl, context, stale);
+      default:
+        return super.fetch(url, context, stale);
+    }
   }
 
   @Override

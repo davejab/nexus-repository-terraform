@@ -28,19 +28,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Singleton
 public class TerraformPathUtils
 {
-  // @todo Change this to a valid filename for your format
-  public static final String PACKAGE_FILENAME = "myPackageFilename.txt";
+  public static final String DISCOVERY_PATH = ".well-known/terraform.json";
+  public static final String API_PATH = "v1";
+  public static final String MODULES_PATH = API_PATH + "/modules";
+  public static final String PROVIDERS_PATH = API_PATH + "/providers";
 
-  // @todo Change this to a valid filename for your format
-  public static final String ASSET_FILENAME = "myAssetFilename.fil";
+  private String token(final TokenMatcher.State state, final String token) {
+    return match(state, token);
+  }
 
   public TokenMatcher.State matcherState(final Context context) {
     return context.getAttributes().require(TokenMatcher.State.class);
-  }
-
-  // @todo Change this to a valid token for your format
-  public String myToken(final TokenMatcher.State state) {
-    return match(state, "myTokenName");
   }
 
   private String match(final TokenMatcher.State state, final String name) {
@@ -50,7 +48,81 @@ public class TerraformPathUtils
     return result;
   }
 
-  public String buildAssetPath(final State matcherState, final String assetName) {
-    return String.format("/%s/%s", myToken(matcherState), assetName);
+  public String discoveryPath(final State matcherState) {
+    return String.format("%s", DISCOVERY_PATH);
   }
+
+  public String modulesPath(final State matcherState) {
+    return String.format("%s/index.json", MODULES_PATH);
+  }
+
+  public String moduleVersionsPath(final State matcherState) {
+    String namespace = token(matcherState, "namespace");
+    String name = token(matcherState, "name");
+    String provider = token(matcherState, "provider");
+    return String.format("%s/%s/%s/%s/index.json", MODULES_PATH, namespace, name, provider);
+  }
+
+  public String providersPath(final State matcherState) {
+    return String.format("%s/index.json", PROVIDERS_PATH);
+  }
+
+  private String providerPath(final State matcherState) {
+    String hostname = token(matcherState, "hostname");
+    String namespace = token(matcherState, "namespace");
+    String type = token(matcherState, "type");
+    return String.format("%s/%s/%s/%s", PROVIDERS_PATH, hostname, namespace, type);
+  }
+
+  public String providerVersionsPath(final State matcherState) {
+    return String.format("%s/index.json", providerPath(matcherState));
+  }
+
+  public String providerVersionPath(final State matcherState) {
+    String version = token(matcherState, "version");
+    return String.format("%s/%s.json", providerPath(matcherState), version);
+  }
+
+  public String providerArchivePath(final State matcherState) {
+    String provider = token(matcherState, "provider");
+    String type = token(matcherState, "type");
+    String version = token(matcherState, "version");
+    String os = token(matcherState, "os");
+    String arch = token(matcherState, "arch");
+    return String.format("%s/%s-%s_%s_%s_%s.zip", providerPath(matcherState), provider, type, version, os, arch);
+  }
+
+  private String removeFromPath(String url, String pattern) {
+    return url.replaceAll(pattern, "");
+  }
+
+  private String replaceHostname(final String url, final State matcherState) {
+    return removeFromPath(url, "/" + matcherState.getTokens().get("hostname"));
+  }
+
+  private String removeLastPath(final String url) {
+    return removeFromPath(url, "/[^/]*$");
+  }
+
+  public String toProviderVersionsPath(final String url, final State matcherState) {
+    return removeLastPath(replaceHostname(url, matcherState));
+  }
+
+  public String toProviderVersionDownloadPath(final String url, final String os,
+                                              final String arch, final State matcherState) {
+    return toProviderArchiveDownloadPath(url, os, arch, matcherState);
+  }
+
+  public String toProviderArchiveDownloadPath(final String url, final State matcherState) {
+    String os = matcherState.getTokens().get("os");
+    String arch = matcherState.getTokens().get("arch");
+    return toProviderArchiveDownloadPath(url, os, arch, matcherState);
+  }
+
+  private String toProviderArchiveDownloadPath(final String url, final String os,
+                                              final String arch, final State matcherState) {
+    String version = matcherState.getTokens().get("version");
+    return removeLastPath(replaceHostname(url, matcherState)) + "/" + version + "/download/" + os + "/" + arch;
+  }
+
 }

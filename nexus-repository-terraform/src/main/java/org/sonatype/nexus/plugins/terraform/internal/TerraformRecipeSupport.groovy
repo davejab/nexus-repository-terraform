@@ -43,8 +43,9 @@ import org.sonatype.nexus.repository.view.matchers.ActionMatcher
 import org.sonatype.nexus.repository.view.matchers.logic.LogicMatchers
 import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher
 
-import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.ASSET_FILENAME
-import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.PACKAGE_FILENAME
+import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.DISCOVERY_PATH;
+import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.MODULES_PATH;
+import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.PROVIDERS_PATH;
 import static org.sonatype.nexus.repository.http.HttpMethods.GET
 import static org.sonatype.nexus.repository.http.HttpMethods.HEAD
 
@@ -112,29 +113,61 @@ abstract class TerraformRecipeSupport
     super(type, format)
   }
 
-  // @todo Add/change matcher methods here
-
-  static Matcher packageTerraformMatcher() {
-    buildTokenMatcherForPatternAndAssetKind("/{myTokenName:.+}/${PACKAGE_FILENAME}", AssetKind.PACKAGES, GET, HEAD)
+  static Matcher discoveryMatcher() {
+    buildTokenMatcherForPatternAndAssetKind(
+            "/${DISCOVERY_PATH}",
+            AssetKind.DISCOVERY, GET, HEAD);
   }
 
-  static Matcher assetTerraformMatcher() {
-    buildTokenMatcherForPatternAndAssetKind("/{myTokenName:.+}/${ASSET_FILENAME}", AssetKind.ARCHIVE, GET, HEAD)
+  static Matcher modulesMatcher() {
+    buildTokenMatcherForPatternAndAssetKind(
+            "/${MODULES_PATH}",
+            AssetKind.MODULES, GET, HEAD);
+  }
+
+  static Matcher moduleVersionsMatcher() {
+    buildTokenMatcherForPatternAndAssetKind(
+            "/${MODULES_PATH}/{namespace}/{name}/{provider}/index.json",
+            AssetKind.MODULE_VERSIONS, GET, HEAD);
+  }
+
+  static Matcher providersMatcher() {
+    buildTokenMatcherForPatternAndAssetKind(
+            "/${PROVIDERS_PATH}",
+            AssetKind.PROVIDERS, GET, HEAD);
+  }
+
+  static Matcher providerVersionsMatcher() {
+    buildTokenMatcherForPatternAndAssetKind(
+            "/${PROVIDERS_PATH}/{hostname}/{namespace}/{type}/index.json",
+            AssetKind.PROVIDER_VERSIONS, GET, HEAD);
+  }
+
+  static Matcher providerVersionMatcher() {
+    buildTokenMatcherForPatternAndAssetKind(
+            "/${PROVIDERS_PATH}/{hostname}/{namespace}/{type}/{version}.json",
+            AssetKind.PROVIDER_VERSION, GET, HEAD);
+  }
+
+  static Matcher providerArchiveMatcher() {
+    buildTokenMatcherForPatternAndAssetKind(
+            "/${PROVIDERS_PATH}/{hostname}/{namespace}/{type}/{provider}-{type}_{version}_{os}_{arch}.zip",
+            AssetKind.PROVIDER_ARCHIVE, GET, HEAD);
   }
 
   static Matcher buildTokenMatcherForPatternAndAssetKind(final String pattern,
                                                          final AssetKind assetKind,
                                                          final String... actions) {
     LogicMatchers.and(
-        new ActionMatcher(actions),
-        new TokenMatcher(pattern),
-        new Matcher() {
-          @Override
-          boolean matches(final Context context) {
-            context.attributes.set(AssetKind.class, assetKind)
-            return true
-          }
-        }
+            new ActionMatcher(actions),
+            new TokenMatcher(pattern),
+            new Matcher() {
+              @Override
+              boolean matches(final Context context) {
+                context.attributes.set(AssetKind.class, assetKind)
+                return true
+              }
+            }
     )
   }
 

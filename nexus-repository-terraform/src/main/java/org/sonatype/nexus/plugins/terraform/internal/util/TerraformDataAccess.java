@@ -13,9 +13,7 @@
 package org.sonatype.nexus.plugins.terraform.internal.util;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
@@ -34,12 +32,11 @@ import org.sonatype.nexus.repository.storage.StorageTx;
 import org.sonatype.nexus.repository.view.Content;
 import org.sonatype.nexus.repository.view.Payload;
 import org.sonatype.nexus.repository.view.payloads.BlobPayload;
+import org.sonatype.nexus.repository.view.payloads.TempBlob;
 
 import com.google.common.collect.ImmutableList;
 
 import static java.util.Collections.singletonList;
-import static org.sonatype.nexus.repository.storage.ComponentEntityAdapter.P_GROUP;
-import static org.sonatype.nexus.repository.storage.ComponentEntityAdapter.P_VERSION;
 import static org.sonatype.nexus.repository.storage.MetadataNodeEntityAdapter.P_NAME;
 
 /**
@@ -89,7 +86,7 @@ public class TerraformDataAccess
    */
   public Content saveAsset(final StorageTx tx,
                            final Asset asset,
-                           final Supplier<InputStream> contentSupplier,
+                           final TempBlob contentSupplier,
                            final Payload payload) throws IOException
   {
     AttributesMap contentAttributes = null;
@@ -108,7 +105,7 @@ public class TerraformDataAccess
    */
   public Content saveAsset(final StorageTx tx,
                            final Asset asset,
-                           final Supplier<InputStream> contentSupplier,
+                           final TempBlob contentSupplier,
                            final String contentType,
                            @Nullable final AttributesMap contentAttributes) throws IOException
   {
