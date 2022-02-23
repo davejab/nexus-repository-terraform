@@ -88,14 +88,14 @@ The table below outlines what version of Nexus Repository the plugin was built a
 
 | Plugin Version | Nexus Repository Version |
 |----------------|--------------------------|
-| v0.0.1         | 3.28.1-01                |
+| v0.0.1         | 3.31.0-01                |
 
 If a new version of Nexus Repository is released and the plugin needs changes, a new release will be made, and this
 table will be updated to indicate which version of Nexus Repository it will function against. This is done on a time 
 available basis, as this is community supported. If you see a new version of Nexus Repository, go ahead and update the
 plugin and send us a PR after testing it out!
 
-All released versions can be found [here](https://github.com/sonatype-nexus-community/nexus-repository-terraform/releases).
+All released versions can be found [here](https://github.com/davejab/nexus-repository-terraform/releases).
 
 ## Features Implemented In This Plugin 
 
@@ -109,9 +109,9 @@ All released versions can be found [here](https://github.com/sonatype-nexus-comm
 
 #### Proxy
 
-| Plugin Version               | Nexus Repository Version |
-|------------------------------|--------------------------|
-| `terraform client command`         | :heavy_check_mark:       |
+| Command          | Implemented |
+|------------------|--------------------------|
+| `terraform init` | :heavy_check_mark:       |
 
 ## Installing the plugin
 
