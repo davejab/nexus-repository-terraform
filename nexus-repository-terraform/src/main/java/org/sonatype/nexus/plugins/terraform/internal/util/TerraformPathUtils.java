@@ -97,7 +97,7 @@ public class TerraformPathUtils
   }
 
   private String replaceHostname(final String url, final State matcherState) {
-    return removeFromPath(url, "/" + matcherState.getTokens().get("hostname"));
+    return removeFromPath(url, "/" + token(matcherState, "hostname"));
   }
 
   private String removeLastPath(final String url) {
@@ -114,15 +114,15 @@ public class TerraformPathUtils
   }
 
   public String toProviderArchiveDownloadPath(final String url, final State matcherState) {
-    String os = matcherState.getTokens().get("os");
-    String arch = matcherState.getTokens().get("arch");
+    String os = token(matcherState, "os");
+    String arch = token(matcherState, "arch");
     return toProviderArchiveDownloadPath(url, os, arch, matcherState);
   }
 
   private String toProviderArchiveDownloadPath(final String url, final String os,
                                               final String arch, final State matcherState) {
-    String version = matcherState.getTokens().get("version");
-    return removeLastPath(replaceHostname(url, matcherState)) + "/" + version + "/download/" + os + "/" + arch;
+    String version = token(matcherState, "version");
+    return String.format("%s/%s/download/%s/%s", removeLastPath(replaceHostname(url, matcherState)), version, os, arch);
   }
 
 }
