@@ -62,6 +62,12 @@
       <artifactId>nexus-repository-testsupport</artifactId>
       <version>${nxrm-version}</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.sun</groupId>
+          <artifactId>tools</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
