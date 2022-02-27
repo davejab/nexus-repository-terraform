@@ -242,16 +242,20 @@ public class TerraformProxyFacetImpl
           for (String arch: (String[])os.getValue()) {
             String downloadUrl = terraformPathUtils
                     .toProviderVersionDownloadPath(url, (String)os.getKey(), arch, matcherState);
+            log.debug("Fetching filename for {} on {} from {}", os.getKey(), arch, downloadUrl);
             downloads.add(super.fetch(downloadUrl, context, stale));
           }   
         }  
         return terraformDataUtils.providerVersionJson(downloads);
       case PROVIDER_VERSIONS:
         url = terraformPathUtils.toProviderVersionsPath(url, matcherState);
+        log.debug("Fetching versions from {}", url);
         return terraformDataUtils.providerVersionsJson(super.fetch(url, context, stale));
       case PROVIDER_ARCHIVE:
         String downloadInfoUrl = terraformPathUtils.toProviderArchiveDownloadPath(url, matcherState);
+        log.debug("Fetching download link from {}", downloadInfoUrl);
         String downloadUrl = terraformDataUtils.getDownloadUrl(super.fetch(downloadInfoUrl, context, stale));
+        log.debug("Fetching archive from {}", downloadUrl);
         return super.fetch(downloadUrl, context, stale);
       default:
         return super.fetch(url, context, stale);
