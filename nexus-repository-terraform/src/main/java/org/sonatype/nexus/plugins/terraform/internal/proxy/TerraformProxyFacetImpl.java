@@ -235,26 +235,34 @@ public class TerraformProxyFacetImpl
   protected Content fetch(String url, Context context, Content stale) throws IOException {
     AssetKind assetKind = context.getAttributes().require(AssetKind.class);
     TokenMatcher.State matcherState = terraformPathUtils.matcherState(context);
+    Content response;
     switch (assetKind) {
       case PROVIDER_VERSION:
-        ArrayList<Content> downloads = new ArrayList<>();
+        ArrayList<String> downloads = new ArrayList<>();
         for(Entry os : terraformDataUtils.getPlatformMap().entrySet()) {
           for (String arch: (String[])os.getValue()) {
             String downloadUrl = terraformPathUtils
                     .toProviderVersionDownloadPath(url, (String)os.getKey(), arch, matcherState);
             log.debug("Fetching filename for {} on {} from {}", os.getKey(), arch, downloadUrl);
-            downloads.add(super.fetch(downloadUrl, context, stale));
+            response = super.fetch(downloadUrl, context, stale);
+            downloads.add(terraformDataUtils.contentToString(response));
+            response.close();
           }   
         }  
         return terraformDataUtils.providerVersionJson(downloads);
       case PROVIDER_VERSIONS:
         url = terraformPathUtils.toProviderVersionsPath(url, matcherState);
         log.debug("Fetching versions from {}", url);
-        return terraformDataUtils.providerVersionsJson(super.fetch(url, context, stale));
+        response = super.fetch(url, context, stale);
+        Content versions = terraformDataUtils.providerVersionsJson(response);
+        response.close();
+        return versions;
       case PROVIDER_ARCHIVE:
         String downloadInfoUrl = terraformPathUtils.toProviderArchiveDownloadPath(url, matcherState);
         log.debug("Fetching download link from {}", downloadInfoUrl);
-        String downloadUrl = terraformDataUtils.getDownloadUrl(super.fetch(downloadInfoUrl, context, stale));
+        response = super.fetch(downloadInfoUrl, context, stale);
+        String downloadUrl = terraformDataUtils.getDownloadUrl(response);
+        response.close();
         log.debug("Fetching archive from {}", downloadUrl);
         return super.fetch(downloadUrl, context, stale);
       default:

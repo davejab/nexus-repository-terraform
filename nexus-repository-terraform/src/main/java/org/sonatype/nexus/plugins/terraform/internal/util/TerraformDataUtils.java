@@ -55,13 +55,12 @@ public class TerraformDataUtils
     return stringToContent(mirrorVersionsJson);
   }
 
-  public Content providerVersionJson(final ArrayList<Content> downloads) throws IOException {
+  public Content providerVersionJson(final ArrayList<String> downloads) throws IOException {
     HashMap<String, MirrorUrl> archives = new HashMap<>();
-    for(Content downloadContent : downloads) {
-      if (downloadContent == null){
+    for(String json : downloads) {
+      if (json == null){
         continue;
       }
-      String json = contentToString(downloadContent);
       TerraformDownload terraformDownload = getObjectMapper().readValue(json, TerraformDownload.class);
       archives.put(terraformDownload.getPlatform(), new MirrorUrl(terraformDownload.getFilename()));
     }
@@ -79,7 +78,7 @@ public class TerraformDataUtils
     return new Content(new StringPayload(string, "text/plain"));
   }
 
-  private String contentToString(final Content content) throws IOException {
+  public String contentToString(final Content content) throws IOException {
     return new BufferedReader(
       new InputStreamReader(content.openInputStream(), StandardCharsets.UTF_8))
         .lines()

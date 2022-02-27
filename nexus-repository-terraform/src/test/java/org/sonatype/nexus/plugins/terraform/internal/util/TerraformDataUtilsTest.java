@@ -49,15 +49,11 @@ public class TerraformDataUtilsTest
 
   @Test
   public void providerVersionJson() throws IOException {
-    String[] testJsons = new String[]{
-            "{\"os\":\"linux\",\"arch\":\"amd64\",\"filename\":\"test_linux_amd64.zip\"}",
-            "{\"os\":\"darwin\",\"arch\":\"amd64\",\"filename\":\"test_darwin_amd64.zip\"}"
-    };
-    ArrayList<Content> testContents = new ArrayList<>();
-    for (String testJson : testJsons) {
-      testContents.add(mockContent(testJson));
-    }
-    Content result = underTest.providerVersionJson(testContents);
+    ArrayList<String> testJsons = new ArrayList(){{
+            add("{\"os\":\"linux\",\"arch\":\"amd64\",\"filename\":\"test_linux_amd64.zip\"}");
+            add("{\"os\":\"darwin\",\"arch\":\"amd64\",\"filename\":\"test_darwin_amd64.zip\"}");
+    }};
+    Content result = underTest.providerVersionJson(testJsons);
     String expectedJson = "{\"archives\":{\"darwin_amd64\":{\"url\":\"test_darwin_amd64.zip\"}," +
             "\"linux_amd64\":{\"url\":\"test_linux_amd64.zip\"}}}";
     Content expectedContent = mockContent(expectedJson);
@@ -71,6 +67,14 @@ public class TerraformDataUtilsTest
 
     Content testContent = mockContent(testJson);
     String result = underTest.getDownloadUrl(testContent);
+
+    assertThat(result, is(equalTo(expected)));
+  }
+
+  @Test
+  public void contentToString() throws IOException {
+    String expected = "{\"download_url\":\"https://example.com/test_linux_amd64.zip\"}";
+    String result = underTest.contentToString(mockContent(expected));
 
     assertThat(result, is(equalTo(expected)));
   }
