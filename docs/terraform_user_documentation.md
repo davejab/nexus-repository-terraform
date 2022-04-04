@@ -35,6 +35,16 @@ detail. Minimal configuration steps are:
 Using the `terraform` client, you can now download packages from your NXRM Terraform proxy like so:
 
 - Define a `network-mirror` in your Terraform config file as documented [here](https://www.terraform.io/cli/config/config-file#provider-installation)
+
+  (**NOTE**: you must append `/v1/providers/` to the repository URL) e.g.
+  ```
+  # ~/.terraformrc
+  provider_installation {
+    network_mirror {
+      url = "https://nexus.com/repository/terraform-proxy/v1/providers/"
+    }
+  }
+  ```
     
 The configuration above tells terraform to fetch (and install) packages from your NXRM Terraform proxy. The NXRM Terraform proxy will 
 download any missing packages from the remote Terraform repository, and cache the packages on the NXRM Terraform proxy.
