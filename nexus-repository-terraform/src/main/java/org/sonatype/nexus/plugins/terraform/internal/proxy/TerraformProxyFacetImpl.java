@@ -245,6 +245,10 @@ public class TerraformProxyFacetImpl
                     .toProviderVersionDownloadPath(url, (String)os.getKey(), arch, matcherState);
             log.debug("Fetching filename for {} on {} from {}", os.getKey(), arch, downloadUrl);
             response = super.fetch(downloadUrl, context, stale);
+            if (response == null){
+              log.debug("Filename for {} on {} not found", os.getKey(), arch);
+              continue;
+            }
             downloads.add(terraformDataUtils.contentToString(response));
             response.close();
           }   
