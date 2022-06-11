@@ -119,19 +119,19 @@ public class TerraformProxyFacetImpl
     TokenMatcher.State matcherState = terraformPathUtils.matcherState(context);
     switch (assetKind) {
       case DISCOVERY:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.discoveryPath(matcherState));
+        return putTerraformPackage(content, assetKind, terraformPathUtils.discoveryPath(matcherState), matcherState);
       case MODULES:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.modulesPath(matcherState));
+        return putTerraformPackage(content, assetKind, terraformPathUtils.modulesPath(matcherState), matcherState);
       case MODULE_VERSIONS:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.moduleVersionsPath(matcherState));
+        return putTerraformPackage(content, assetKind, terraformPathUtils.moduleVersionsPath(matcherState), matcherState);
       case PROVIDERS:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.providersPath(matcherState));
+        return putTerraformPackage(content, assetKind, terraformPathUtils.providersPath(matcherState), matcherState);
       case PROVIDER_VERSIONS:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.providerVersionsPath(matcherState));
+        return putTerraformPackage(content, assetKind, terraformPathUtils.providerVersionsPath(matcherState), matcherState);
       case PROVIDER_VERSION:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.providerVersionPath(matcherState));
+        return putTerraformPackage(content, assetKind, terraformPathUtils.providerVersionPath(matcherState), matcherState);
       case PROVIDER_ARCHIVE:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.providerArchivePath(matcherState));
+        return putTerraformPackage(content, assetKind, terraformPathUtils.providerArchivePath(matcherState), matcherState);
       default:
         throw new IllegalStateException("Received an invalid AssetKind of type: " + assetKind.name());
     }
@@ -139,7 +139,8 @@ public class TerraformProxyFacetImpl
 
   private Content putTerraformPackage(final Content content,
                                   final AssetKind assetKind,
-                                  final String assetPath)
+                                  final String assetPath,
+                                  final TokenMatcher.State matcherState)
       throws IOException
   {
     StorageFacet storageFacet = facet(StorageFacet.class);
@@ -147,7 +148,7 @@ public class TerraformProxyFacetImpl
     try (TempBlob tempBlob = storageFacet.createTempBlob(content.openInputStream(), TerraformDataAccess.HASH_ALGORITHMS)) {
       Component component = findOrCreateComponent(assetPath);
 
-      return findOrCreateAsset(tempBlob, content, assetKind, assetPath, component);
+      return findOrCreateAsset(tempBlob, content, assetKind, assetPath, component, matcherState);
     }
   }
 
@@ -169,23 +170,24 @@ public class TerraformProxyFacetImpl
     return component;
   }
 
-  private Content putMetadata(final Content content,
-                              final AssetKind assetKind,
-                              final String assetPath) throws IOException
-  {
-    StorageFacet storageFacet = facet(StorageFacet.class);
-
-    try (TempBlob tempBlob = storageFacet.createTempBlob(content.openInputStream(), TerraformDataAccess.HASH_ALGORITHMS)) {
-      return findOrCreateAsset(tempBlob, content, assetKind, assetPath, null);
-    }
-  }
+//  private Content putMetadata(final Content content,
+//                              final AssetKind assetKind,
+//                              final String assetPath) throws IOException
+//  {
+//    StorageFacet storageFacet = facet(StorageFacet.class);
+//
+//    try (TempBlob tempBlob = storageFacet.createTempBlob(content.openInputStream(), TerraformDataAccess.HASH_ALGORITHMS)) {
+//      return findOrCreateAsset(tempBlob, content, assetKind, assetPath, null);
+//    }
+//  }
 
   @TransactionalStoreBlob
   protected Content findOrCreateAsset(final TempBlob tempBlob,
                                       final Content content,
                                       final AssetKind assetKind,
                                       final String assetPath,
-                                      final Component component) throws IOException
+                                      final Component component,
+                                      final TokenMatcher.State matcherState) throws IOException
   {
     StorageTx tx = UnitOfWork.currentTx();
     Bucket bucket = tx.findBucket(getRepository());
@@ -202,7 +204,9 @@ public class TerraformProxyFacetImpl
       if (asset == null) {
         asset = tx.createAsset(bucket, getRepository().getFormat());
         asset.name(assetPath);
-        asset.formatAttributes().set(P_ASSET_KIND, assetKind.name());
+        for (String key : matcherState.getTokens().keySet()) {
+          asset.formatAttributes().set(key, matcherState.getTokens().get(key));
+        }
       }
 //    }
 
