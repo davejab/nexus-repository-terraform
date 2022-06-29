@@ -47,7 +47,7 @@ import static org.sonatype.nexus.repository.storage.MetadataNodeEntityAdapter.P_
 @Named
 public class TerraformDataAccess
 {
-  public static final List<HashAlgorithm> HASH_ALGORITHMS = ImmutableList.of(HashAlgorithm.SHA1);
+  public static final ImmutableList<HashAlgorithm> HASH_ALGORITHMS = ImmutableList.of(HashAlgorithm.SHA1);
 
   /**
    * Find a component by its name and tag (version)
