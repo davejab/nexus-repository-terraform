@@ -40,6 +40,8 @@ import static java.util.Collections.singletonList;
 import static org.sonatype.nexus.repository.storage.MetadataNodeEntityAdapter.P_NAME;
 
 /**
+ * Data access for Terraform
+ *
  * @since 0.0.1
  */
 @Named

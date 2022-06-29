@@ -20,6 +20,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
+ * Data utilities for Terraform
+ *
  * @since 0.0.1
  */
 @Named
