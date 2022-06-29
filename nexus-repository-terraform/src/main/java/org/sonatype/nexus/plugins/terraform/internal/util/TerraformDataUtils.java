@@ -79,10 +79,12 @@ public class TerraformDataUtils
   }
 
   public String contentToString(final Content content) throws IOException {
-    return new BufferedReader(
-      new InputStreamReader(content.openInputStream(), StandardCharsets.UTF_8))
-        .lines()
-        .collect(Collectors.joining("\n"));
+    InputStreamReader inputStreamReader = new InputStreamReader(content.openInputStream(), StandardCharsets.UTF_8);
+    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+    String result = bufferedReader.lines().collect(Collectors.joining("\n"));
+    bufferedReader.close();
+    inputStreamReader.close();
+    return result;
   }
 
 }
