@@ -22,6 +22,8 @@ import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher.State;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
+ * Path utilities for Terraform
+ *
  * @since 0.0.1
  */
 @Named

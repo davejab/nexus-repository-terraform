@@ -5,8 +5,8 @@ ARG NEXUS_VERSION=latest
 FROM maven:3-jdk-8-alpine AS build
 
 COPY . /nexus-repository-terraform/
-RUN cd /nexus-repository-terraform/; \
-    mvn clean package -PbuildKar;
+WORKDIR /nexus-repository-terraform/
+RUN mvn clean package -PbuildKar;
 
 FROM sonatype/nexus3:$NEXUS_VERSION
 

@@ -40,12 +40,14 @@ import static java.util.Collections.singletonList;
 import static org.sonatype.nexus.repository.storage.MetadataNodeEntityAdapter.P_NAME;
 
 /**
+ * Data access for Terraform
+ *
  * @since 0.0.1
  */
 @Named
 public class TerraformDataAccess
 {
-  public static final List<HashAlgorithm> HASH_ALGORITHMS = ImmutableList.of(HashAlgorithm.SHA1);
+  public static final ImmutableList<HashAlgorithm> HASH_ALGORITHMS = ImmutableList.of(HashAlgorithm.SHA1);
 
   /**
    * Find a component by its name and tag (version)
