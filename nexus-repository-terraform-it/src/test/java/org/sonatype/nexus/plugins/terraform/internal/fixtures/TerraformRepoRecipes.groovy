@@ -34,11 +34,5 @@ trait TerraformRepoRecipes
     createRepository(createProxy(name, 'terraform-proxy', remoteUrl))
   }
 
-  @Nonnull
-  Repository createRHosted(final String name)
-  {
-    createRepository(createHosted(name, 'terraform-hosted'))
-  }
-
   abstract Repository createRepository(final Configuration configuration)
 }
