@@ -15,7 +15,7 @@
 <!-- generated with nexus-format-archetype version 1.0.56 on 18-Feb-2022 -->
 # Nexus Repository Terraform Format
 
-[![Maven Central](https://img.shields.io/maven-central/v/org.sonatype.nexus.plugins/nexus-repository-terraform.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.sonatype.nexus.plugins%22%20AND%20a:%22nexus-repository-terraform%22) [![CircleCI](https://circleci.com/gh/davejab/nexus-repository-terraform.svg?style=shield)](https://circleci.com/gh/davejab/nexus-repository-terraform) [![Join the chat at https://gitter.im/sonatype/nexus-developers](https://badges.gitter.im/sonatype/nexus-developers.svg)](https://gitter.im/sonatype/nexus-developers?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![DepShield Badge](https://depshield.sonatype.org/badges/davejab/nexus-repository-terraform/depshield.svg)](https://depshield.github.io)
+[![Maven Central](https://img.shields.io/maven-central/v/org.sonatype.nexus.plugins/nexus-repository-terraform.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.sonatype.nexus.plugins%22%20AND%20a:%22nexus-repository-terraform%22) [![CircleCI](https://circleci.com/gh/davejab/nexus-repository-terraform.svg?style=shield)](https://circleci.com/gh/davejab/nexus-repository-terraform) [![Join the chat at https://gitter.im/sonatype/nexus-developers](https://badges.gitter.im/sonatype/nexus-developers.svg)](https://gitter.im/sonatype/nexus-developers?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # Table Of Contents
 
@@ -88,8 +88,8 @@ The table below outlines what version of Nexus Repository the plugin was built a
 
 | Plugin Version | Nexus Repository Version |
 |----------------|--------------------------|
-| v0.0.1         | 3.31.0-01                |
-| v0.0.2         | 3.38.0-01                |
+| v0.0.1-1       | 3.31.0-01                |
+| v0.0.5         | 3.38.0-01                |
 
 If a new version of Nexus Repository is released and the plugin needs changes, a new release will be made, and this
 table will be updated to indicate which version of Nexus Repository it will function against. This is done on a time 
