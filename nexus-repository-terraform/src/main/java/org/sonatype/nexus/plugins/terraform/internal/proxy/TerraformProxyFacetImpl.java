@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.sonatype.nexus.common.collect.AttributesMap;
 import org.sonatype.nexus.plugins.terraform.internal.AssetKind;
 import org.sonatype.nexus.plugins.terraform.internal.util.TerraformDataAccess;
 import org.sonatype.nexus.plugins.terraform.internal.util.TerraformDataUtils;
@@ -243,6 +244,7 @@ public class TerraformProxyFacetImpl
     switch (assetKind) {
       case PROVIDER_VERSION:
         ArrayList<String> downloads = new ArrayList<>();
+        AttributesMap attributesMap = new AttributesMap();
         for(Entry os : terraformDataUtils.getPlatformMap().entrySet()) {
           for (String arch: (String[])os.getValue()) {
             String downloadUrl = terraformPathUtils
@@ -254,10 +256,15 @@ public class TerraformProxyFacetImpl
               continue;
             }
             downloads.add(terraformDataUtils.contentToString(response));
+            attributesMap = response.getAttributes();
             response.close();
           }   
-        }  
-        return terraformDataUtils.providerVersionJson(downloads);
+        }
+        Content content = terraformDataUtils.providerVersionJson(downloads);
+        for (String key : attributesMap.keys()) {
+          content.getAttributes().set(key, attributesMap.get(key));
+        }
+        return content;
       case PROVIDER_VERSIONS:
         url = terraformPathUtils.toProviderVersionsPath(url, matcherState);
         log.debug("Fetching versions from {}", url);
