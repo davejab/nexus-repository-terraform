@@ -50,7 +50,7 @@ You may also find it helpful to configure your IDE to use the [Sonatype Code sty
 
 ### Download
 
- Find pre-compiled files [here](https://search.maven.org/search?q=g:%22org.sonatype.nexus.plugins%22%20AND%20a:%22nexus-repository-terraform%22).
+ Find pre-compiled files [here](https://github.com/davejab/nexus-repository-terraform/releases).
 
 ### Building
 
@@ -124,7 +124,7 @@ then install the plugin with the options shown below:
 Thanks to some upstream work in Nexus Repository, it's become a LOT easier to install a plugin. To install the `terraform` plugin, follow these steps:
 
 * Build the plugin with `mvn clean package -PbuildKar`
-* Copy the `nexus-repository-terraform-0.0.1-bundle.kar` file from your `target` folder to the `deploy` folder for your Nexus Repository installation.
+* Copy the `nexus-repository-terraform-x.y.z-bundle.kar` file from your `target` folder to the `deploy` folder for your Nexus Repository installation.
 
 Once you've done this, go ahead and either restart Nexus Repo, or go ahead and start it if it wasn't running to begin with.
 
@@ -144,7 +144,7 @@ good installation path if you are just testing or doing development on the plugi
   # sudo su - nexus
   $ cd <nexus_dir>/bin
   $ ./nexus run
-  > bundle:install file:///tmp/nexus-repository-terraform-0.0.1.jar
+  > bundle:install file:///tmp/nexus-repository-terraform-x.y.z.jar
   > bundle:list
   ```
   (look for org.sonatype.nexus.plugins:nexus-repository-terraform ID, should be the last one)
@@ -156,7 +156,7 @@ good installation path if you are just testing or doing development on the plugi
 
 For more permanent installs of the nexus-repository-terraform plugin, follow these instructions:
 
-* Copy the bundle (nexus-repository-terraform-0.0.1.jar) into <nexus_dir>/deploy
+* Copy the bundle (nexus-repository-terraform-x.y.z.jar) into <nexus_dir>/deploy
 
 This will cause the plugin to be loaded with each restart of Nexus Repository. As well, this folder is monitored
 by Nexus Repository and the plugin should load within 60 seconds of being copied there if Nexus Repository
@@ -166,7 +166,7 @@ is running. You will still need to start the bundle using the karaf commands men
 
 If you are trying to use the terraform plugin permanently, it likely makes more sense to do the following:
 
-* Copy the bundle into `<nexus_dir>/system/org/sonatype/nexus/plugins/nexus-repository-terraform/0.0.1/nexus-repository-terraform-0.0.1.jar`
+* Copy the bundle into `<nexus_dir>/system/org/sonatype/nexus/plugins/nexus-repository-terraform/x.y.z/nexus-repository-terraform-x.y.z.jar`
 * Make the following additions marked with + to `<nexus_dir>/system/org/sonatype/nexus/assemblies/nexus-core-feature/3.x.y/nexus-core-feature-3.x.y-features.xml`
 
    ```
@@ -177,9 +177,9 @@ If you are trying to use the terraform plugin permanently, it likely makes more 
    
    And
    ```
-   + <feature name="nexus-repository-terraform" description="org.sonatype.nexus.plugins:nexus-repository-terraform" version="0.0.1">
+   + <feature name="nexus-repository-terraform" description="org.sonatype.nexus.plugins:nexus-repository-terraform" version="x.y.z">
    +     <details>org.sonatype.nexus.plugins:nexus-repository-terraform</details>
-   +     <bundle>mvn:org.sonatype.nexus.plugins/nexus-repository-terraform/0.0.1</bundle>
+   +     <bundle>mvn:org.sonatype.nexus.plugins/nexus-repository-terraform/x.y.z</bundle>
    + </feature>
     </features>
    ```
