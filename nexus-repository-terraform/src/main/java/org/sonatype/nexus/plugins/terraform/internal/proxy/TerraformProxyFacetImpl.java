@@ -250,7 +250,7 @@ public class TerraformProxyFacetImpl
             String downloadUrl = terraformPathUtils
                     .toProviderVersionDownloadPath(url, (String)os.getKey(), arch, matcherState);
             log.debug("Fetching filename for {} on {} from {}", os.getKey(), arch, downloadUrl);
-            response = super.fetch(downloadUrl, context, stale);
+            response = super.fetch(downloadUrl, context, null);
             if (response == null){
               log.debug("Filename for {} on {} not found", os.getKey(), arch);
               continue;
