@@ -29,6 +29,7 @@ import org.ops4j.pax.exam.Option;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.equalTo;
+import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.DISCOVERY_PATH;
 import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.PROVIDERS_PATH;
 import static org.sonatype.nexus.testsuite.testsupport.FormatClientSupport.status;
 
@@ -90,6 +91,8 @@ public class TerraformProxyIT
   @Before
   public void setup() throws Exception {
     server = Server.withPort(0)
+            .serve("/" + DISCOVERY_PATH)
+            .withBehaviours(Behaviours.file(testData.resolveFile(FORMAT_NAME + EXTENSION_JSON)))
             .serve("/" + REMOTE_PROVIDER_PATH)
             .withBehaviours(Behaviours.file(testData.resolveFile(TYPE)))
             .serve("/" + REMOTE_DOWNLOAD_PATH)
@@ -102,6 +105,16 @@ public class TerraformProxyIT
   @Test
   public void unresponsiveRemoteProduces404() throws Exception {
     assertThat(status(proxyClient.get(BAD_PATH)), is(HttpStatus.NOT_FOUND));
+  }
+
+  @Test
+  public void retrieveDiscoveryJSONFromProxyWhenRemoteOnline() throws Exception {
+    assertThat(status(proxyClient.get(DISCOVERY_PATH)), is(HttpStatus.OK));
+
+    final Asset asset = findAsset(proxyRepo, DISCOVERY_PATH);
+    assertThat(asset.name(), is(equalTo(DISCOVERY_PATH)));
+    assertThat(asset.contentType(), is(equalTo(MIME_TYPE_JSON)));
+    assertThat(asset.format(), is(equalTo(FORMAT_NAME)));
   }
 
   @Test
