@@ -12,8 +12,6 @@
  */
 package org.sonatype.nexus.plugins.terraform.internal;
 
-import org.junit.After;
-import org.junit.Before;
 import org.sonatype.goodies.httpfixture.server.fluent.Behaviours;
 import org.sonatype.goodies.httpfixture.server.fluent.Server;
 import org.sonatype.nexus.pax.exam.NexusPaxExamSupport;
@@ -22,6 +20,8 @@ import org.sonatype.nexus.repository.http.HttpStatus;
 import org.sonatype.nexus.repository.storage.Asset;
 import org.sonatype.nexus.testsuite.testsupport.NexusITSupport;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
