@@ -44,7 +44,6 @@ import org.sonatype.nexus.repository.view.payloads.TempBlob;
 import org.sonatype.nexus.transaction.UnitOfWork;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.sonatype.nexus.repository.storage.AssetEntityAdapter.P_ASSET_KIND;
 
 /**
  * Terraform {@link ProxyFacet} implementation.
@@ -103,6 +102,7 @@ public class TerraformProxyFacetImpl
   }
 
   @TransactionalTouchBlob
+  @Override
   public Content getAsset(final String assetPath) {
     StorageTx tx = UnitOfWork.currentTx();
 
