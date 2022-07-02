@@ -16,7 +16,6 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 import org.sonatype.nexus.plugins.terraform.internal.security.TerraformSecurityFacet
-
 import org.sonatype.nexus.repository.Format
 import org.sonatype.nexus.repository.RecipeSupport
 import org.sonatype.nexus.repository.Type

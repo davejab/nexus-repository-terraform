@@ -20,7 +20,6 @@ import org.sonatype.nexus.testsuite.testsupport.fixtures.ConfigurationRecipes
 
 import groovy.transform.CompileStatic
 
-
 /**
  * Factory for Terraform {@link Repository} {@link Configuration}
  */

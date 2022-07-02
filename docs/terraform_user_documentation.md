@@ -25,7 +25,7 @@ You can create a proxy repository in Nexus Repository Manager (NXRM) that will c
 instead of the remote repository.
  
 To proxy a Terraform repository, you simply create a new 'terraform (proxy)' as documented in 
-[Repository Management](https://help.sonatype.com/repomanager3/configuration/repository-management) in
+[Repository Management](https://help.sonatype.com/repomanager3/nexus-repository-administration/repository-management) in
 detail. Minimal configuration steps are:
 
 - Define 'Name' - e.g. `terraform-proxy`

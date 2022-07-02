@@ -13,7 +13,6 @@
 package org.sonatype.nexus.plugins.terraform.internal.util;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
