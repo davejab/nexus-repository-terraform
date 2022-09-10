@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import org.sonatype.nexus.common.hash.HashAlgorithm;
+import org.sonatype.nexus.plugins.terraform.internal.Attributes.TerraformAttributes;
 import org.sonatype.nexus.repository.Facet;
 import org.sonatype.nexus.repository.Repository;
 import org.sonatype.nexus.repository.content.facet.ContentFacet;
@@ -41,9 +42,10 @@ public interface TerraformContentFacet
 
   Optional<Content> get(String path) throws IOException;
 
-  FluentAsset getOrCreateAsset(Repository repository, String componentName, String componentGroup, String assetName);
+  FluentAsset getOrCreateAsset(Repository repository, String componentName, String componentGroup,
+                               String assetName, TerraformAttributes attributes);
 
-  Content put(String path, Payload content) throws IOException;
+  Content put(String path, Payload content, TerraformAttributes attributes) throws IOException;
 
   boolean delete(String path) throws IOException;
 }

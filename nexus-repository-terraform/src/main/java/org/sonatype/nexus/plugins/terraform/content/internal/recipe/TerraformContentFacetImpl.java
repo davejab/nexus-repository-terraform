@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.sonatype.nexus.plugins.terraform.content.TerraformContentFacet;
+import org.sonatype.nexus.plugins.terraform.internal.Attributes.TerraformAttributes;
 import org.sonatype.nexus.plugins.terraform.internal.TerraformFormat;
 import org.sonatype.nexus.repository.Repository;
 import org.sonatype.nexus.repository.content.facet.ContentFacet;
@@ -52,9 +53,10 @@ public class TerraformContentFacetImpl
 
   @Override
   public FluentAsset getOrCreateAsset(
-      final Repository repository, final String componentName, final String componentGroup, final String assetName)
+          final Repository repository, final String componentName, final String componentGroup, final String assetName, TerraformAttributes attributes)
   {
     return assets().path(componentName)
+        .attributes(TerraformFormat.NAME, attributes)
         .component(components()
             .name(componentName)
             .getOrCreate())
@@ -62,10 +64,11 @@ public class TerraformContentFacetImpl
   }
 
   @Override
-  public Content put(final String path, final Payload content) throws IOException {
+  public Content put(final String path, final Payload content, TerraformAttributes attributes) throws IOException {
     try (TempBlob blob = blobs().ingest(content, HASHING)){
       return assets()
           .path(path)
+          .attributes(TerraformFormat.NAME, attributes)
           .component(components()
               .name(path)
               .getOrCreate())

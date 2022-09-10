@@ -18,6 +18,9 @@ import javax.inject.Singleton;
 
 import org.sonatype.goodies.common.ComponentSupport;
 import org.sonatype.nexus.plugins.terraform.content.TerraformContentFacet;
+import org.sonatype.nexus.plugins.terraform.internal.AssetKind;
+import org.sonatype.nexus.plugins.terraform.internal.Attributes.TerraformAttributes;
+import org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils;
 import org.sonatype.nexus.repository.Repository;
 import org.sonatype.nexus.repository.http.HttpResponses;
 import org.sonatype.nexus.repository.view.Context;
@@ -63,7 +66,10 @@ public class TerraformContentHandler
 
       case PUT: {
         Payload content = context.getRequest().getPayload();
-        storage.put(path, content);
+        TokenMatcher.State matcherState = new TerraformPathUtils().matcherState(context);
+        AssetKind assetKind = context.getAttributes().require(AssetKind.class);
+        TerraformAttributes attributes = TerraformAttributes.parse(assetKind, matcherState);
+        storage.put(path, content, attributes);
         return HttpResponses.created();
       }
 
