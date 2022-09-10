@@ -60,7 +60,7 @@ public class TerraformProxyIT
 
   private static final String ARCH = "amd64";
 
-  private static final String PROVIDER_PATH = PROVIDERS_PATH + "/" + HOSTNAME + "/" + NAMESPACE + "/" + TYPE;
+  private static final String PROVIDER_PATH = "/" + PROVIDERS_PATH + "/" + HOSTNAME + "/" + NAMESPACE + "/" + TYPE;
 
   private static final String PROVIDER_INDEX = PROVIDER_PATH + "/index" + EXTENSION_JSON;
 
@@ -111,15 +111,15 @@ public class TerraformProxyIT
   public void retrieveDiscoveryJSONFromProxyWhenRemoteOnline() throws Exception {
     assertThat(status(proxyClient.get(DISCOVERY_PATH)), is(HttpStatus.OK));
 
-    final Asset asset = findAsset(proxyRepo, DISCOVERY_PATH);
-    assertThat(asset.name(), is(equalTo(DISCOVERY_PATH)));
+    final Asset asset = findAsset(proxyRepo, "/" + DISCOVERY_PATH);
+    assertThat(asset.name(), is(equalTo("/" + DISCOVERY_PATH)));
     assertThat(asset.contentType(), is(equalTo(MIME_TYPE_JSON)));
     assertThat(asset.format(), is(equalTo(FORMAT_NAME)));
   }
 
   @Test
   public void retrieveIndexJSONFromProxyWhenRemoteOnline() throws Exception {
-    assertThat(status(proxyClient.get(PROVIDER_INDEX)), is(HttpStatus.OK));
+    assertThat(status(proxyClient.get(PROVIDER_INDEX.replaceFirst("/", ""))), is(HttpStatus.OK));
 
     final Asset asset = findAsset(proxyRepo, PROVIDER_INDEX);
     assertThat(asset.name(), is(equalTo(PROVIDER_INDEX)));
@@ -132,8 +132,7 @@ public class TerraformProxyIT
 
   @Test
   public void retrieveVersionJSONFromProxyWhenRemoteOnline() throws Exception {
-    assertThat(status(proxyClient.get(PROVIDER_VERSION)), is(HttpStatus.OK));
-
+    assertThat(status(proxyClient.get(PROVIDER_VERSION.replaceFirst("/", ""))), is(HttpStatus.OK));
     final Asset asset = findAsset(proxyRepo, PROVIDER_VERSION);
     assertThat(asset.name(), is(equalTo(PROVIDER_VERSION)));
     assertThat(asset.contentType(), is(equalTo(MIME_TYPE_JSON)));
@@ -146,7 +145,7 @@ public class TerraformProxyIT
 
   @Test
   public void retrieveProviderZipFromProxyWhenRemoteOnline() throws Exception {
-    assertThat(status(proxyClient.get(PROVIDER_ZIP)), is(HttpStatus.OK));
+    assertThat(status(proxyClient.get(PROVIDER_ZIP.replaceFirst("/", ""))), is(HttpStatus.OK));
 
     final Asset asset = findAsset(proxyRepo, PROVIDER_ZIP);
     assertThat(asset.name(), is(equalTo(PROVIDER_ZIP)));
