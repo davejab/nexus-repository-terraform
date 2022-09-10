@@ -37,7 +37,7 @@ import static org.sonatype.nexus.common.hash.HashAlgorithm.SHA1;
 public interface TerraformContentFacet
         extends ContentFacet
 {
-  Iterable<HashAlgorithm> HASHING = ImmutableList.of(MD5, SHA1);
+  ImmutableList<HashAlgorithm> HASHING = ImmutableList.of(MD5, SHA1);
 
   Optional<Content> get(String path) throws IOException;
 
