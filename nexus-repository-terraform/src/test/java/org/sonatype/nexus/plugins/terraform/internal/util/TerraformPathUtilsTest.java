@@ -46,7 +46,7 @@ public class TerraformPathUtilsTest
   public void setUp() {
     underTest = new TerraformPathUtils();
 
-    discovery = ".well-known/terraform.json";
+    discovery = "/.well-known/terraform.json";
     api = "v1";
     provider = "provider";
     module = "module";
@@ -63,11 +63,11 @@ public class TerraformPathUtilsTest
     tokens = setupTokens();
     when(state.getTokens()).thenReturn(tokens);
 
-    providerVersionsPath = String.format("%s/%s/%s/%s/index.json", providerPath, hostname, namespace, type);
-    providerVersionPath = String.format("%s/%s/%s/%s/%s.json", providerPath, hostname, namespace, type, version);
-    providerArchivePath = String.format("%s/%s/%s/%s/%s-%s_%s_%s_%s.zip",
+    providerVersionsPath = String.format("/%s/%s/%s/%s/index.json", providerPath, hostname, namespace, type);
+    providerVersionPath = String.format("/%s/%s/%s/%s/%s.json", providerPath, hostname, namespace, type, version);
+    providerArchivePath = String.format("/%s/%s/%s/%s/%s-%s_%s_%s_%s.zip",
             providerPath, hostname, namespace, type, provider, type, version, os, arch);
-    providerVersionDownloadPath = String.format("%s/%s/%s/%s/download/%s/%s",
+    providerVersionDownloadPath = String.format("/%s/%s/%s/%s/download/%s/%s",
             providerPath, namespace, type, version, os, arch);
   }
 
@@ -78,21 +78,21 @@ public class TerraformPathUtilsTest
   }
   @Test
   public void modulesPath() {
-    String expect = String.format("%s/index.json", modulesPath);
+    String expect = String.format("/%s/index.json", modulesPath);
     String result = underTest.modulesPath(state);
     assertThat(result, is(equalTo(expect)));
   }
 
   @Test
   public void moduleVersionsPath() {
-    String expect = String.format("%s/%s/%s/%s/index.json", modulesPath, namespace, name, provider);
+    String expect = String.format("/%s/%s/%s/%s/index.json", modulesPath, namespace, name, provider);
     String result = underTest.moduleVersionsPath(state);
     assertThat(result, is(equalTo(expect)));
   }
 
   @Test
   public void providersPath() {
-    String expect = String.format("%s/index.json", providerPath);
+    String expect = String.format("/%s/index.json", providerPath);
     String result = underTest.providersPath(state);
     assertThat(result, is(equalTo(expect)));
   }
@@ -117,7 +117,7 @@ public class TerraformPathUtilsTest
 
   @Test
   public void toProviderVersionsPath() {
-    String expect = String.format("%s/%s/%s", providerPath, namespace, type);
+    String expect = String.format("/%s/%s/%s", providerPath, namespace, type);
     String result = underTest.toProviderVersionsPath(providerVersionsPath, state);
     assertThat(result, is(equalTo(expect)));
   }

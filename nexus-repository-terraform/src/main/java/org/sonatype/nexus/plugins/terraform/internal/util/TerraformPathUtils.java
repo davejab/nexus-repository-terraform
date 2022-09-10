@@ -15,6 +15,7 @@ package org.sonatype.nexus.plugins.terraform.internal.util;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.sonatype.nexus.plugins.terraform.internal.AssetKind;
 import org.sonatype.nexus.repository.view.Context;
 import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher;
 import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher.State;
@@ -51,29 +52,29 @@ public class TerraformPathUtils
   }
 
   public String discoveryPath(final State matcherState) {
-    return String.format("%s", DISCOVERY_PATH);
+    return String.format("/%s", DISCOVERY_PATH);
   }
 
   public String modulesPath(final State matcherState) {
-    return String.format("%s/index.json", MODULES_PATH);
+    return String.format("/%s/index.json", MODULES_PATH);
   }
 
   public String moduleVersionsPath(final State matcherState) {
     String namespace = token(matcherState, "namespace");
     String name = token(matcherState, "name");
     String provider = token(matcherState, "provider");
-    return String.format("%s/%s/%s/%s/index.json", MODULES_PATH, namespace, name, provider);
+    return String.format("/%s/%s/%s/%s/index.json", MODULES_PATH, namespace, name, provider);
   }
 
   public String providersPath(final State matcherState) {
-    return String.format("%s/index.json", PROVIDERS_PATH);
+    return String.format("/%s/index.json", PROVIDERS_PATH);
   }
 
   private String providerPath(final State matcherState) {
     String hostname = token(matcherState, "hostname");
     String namespace = token(matcherState, "namespace");
     String type = token(matcherState, "type");
-    return String.format("%s/%s/%s/%s", PROVIDERS_PATH, hostname, namespace, type);
+    return String.format("/%s/%s/%s/%s", PROVIDERS_PATH, hostname, namespace, type);
   }
 
   public String providerVersionsPath(final State matcherState) {
@@ -125,6 +126,29 @@ public class TerraformPathUtils
                                               final String arch, final State matcherState) {
     String version = token(matcherState, "version");
     return String.format("%s/%s/download/%s/%s", removeLastPath(replaceHostname(url, matcherState)), version, os, arch);
+  }
+
+  public String getAssetPath(final Context context) throws IllegalStateException {
+    AssetKind assetKind = context.getAttributes().require(AssetKind.class);
+    TokenMatcher.State matcherState = matcherState(context);
+    switch (assetKind) {
+      case DISCOVERY:
+        return discoveryPath(matcherState);
+      case MODULES:
+        return modulesPath(matcherState);
+      case MODULE_VERSIONS:
+        return moduleVersionsPath(matcherState);
+      case PROVIDERS:
+        return providersPath(matcherState);
+      case PROVIDER_VERSION:
+        return providerVersionPath(matcherState);
+      case PROVIDER_VERSIONS:
+        return providerVersionsPath(matcherState);
+      case PROVIDER_ARCHIVE:
+        return providerArchivePath(matcherState);
+      default:
+        throw new IllegalStateException("Received an invalid AssetKind of type: " + assetKind.name());
+    }
   }
 
 }

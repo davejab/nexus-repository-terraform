@@ -10,7 +10,7 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.plugins.terraform.internal.proxy;
+package org.sonatype.nexus.plugins.terraform.orient.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.sonatype.nexus.plugins.terraform.internal.AssetKind;
-import org.sonatype.nexus.plugins.terraform.internal.util.TerraformDataAccess;
+import org.sonatype.nexus.plugins.terraform.orient.internal.proxy.TerraformProxyFacet;
 import org.sonatype.nexus.plugins.terraform.internal.util.TerraformDataUtils;
 import org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils;
 import org.sonatype.nexus.repository.cache.CacheInfo;
@@ -79,26 +79,7 @@ public class TerraformProxyFacetImpl
   @Nullable
   @Override
   protected Content getCachedContent(final Context context) {
-    AssetKind assetKind = context.getAttributes().require(AssetKind.class);
-    TokenMatcher.State matcherState = terraformPathUtils.matcherState(context);
-    switch (assetKind) {
-      case DISCOVERY:
-        return getAsset(terraformPathUtils.discoveryPath(matcherState));
-      case MODULES:
-        return getAsset(terraformPathUtils.modulesPath(matcherState));
-      case MODULE_VERSIONS:
-        return getAsset(terraformPathUtils.moduleVersionsPath(matcherState));
-      case PROVIDERS:
-        return getAsset(terraformPathUtils.providersPath(matcherState));
-      case PROVIDER_VERSION:
-        return getAsset(terraformPathUtils.providerVersionPath(matcherState));
-      case PROVIDER_VERSIONS:
-        return getAsset(terraformPathUtils.providerVersionsPath(matcherState));
-      case PROVIDER_ARCHIVE:
-        return getAsset(terraformPathUtils.providerArchivePath(matcherState));
-      default:
-        throw new IllegalStateException("Received an invalid AssetKind of type: " + assetKind.name());
-    }
+    return getAsset(terraformPathUtils.getAssetPath(context));
   }
 
   @TransactionalTouchBlob
@@ -117,24 +98,7 @@ public class TerraformProxyFacetImpl
   protected Content store(final Context context, final Content content) throws IOException {
     AssetKind assetKind = context.getAttributes().require(AssetKind.class);
     TokenMatcher.State matcherState = terraformPathUtils.matcherState(context);
-    switch (assetKind) {
-      case DISCOVERY:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.discoveryPath(matcherState), matcherState);
-      case MODULES:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.modulesPath(matcherState), matcherState);
-      case MODULE_VERSIONS:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.moduleVersionsPath(matcherState), matcherState);
-      case PROVIDERS:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.providersPath(matcherState), matcherState);
-      case PROVIDER_VERSIONS:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.providerVersionsPath(matcherState), matcherState);
-      case PROVIDER_VERSION:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.providerVersionPath(matcherState), matcherState);
-      case PROVIDER_ARCHIVE:
-        return putTerraformPackage(content, assetKind, terraformPathUtils.providerArchivePath(matcherState), matcherState);
-      default:
-        throw new IllegalStateException("Received an invalid AssetKind of type: " + assetKind.name());
-    }
+    return putTerraformPackage(content, assetKind, terraformPathUtils.getAssetPath(context), matcherState);
   }
 
   private Content putTerraformPackage(final Content content,
