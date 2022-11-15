@@ -10,7 +10,7 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.plugins.terraform.content.internal.recipe;
+package org.sonatype.nexus.plugins.terraform.datastore.internal.recipe;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.sonatype.nexus.plugins.terraform.content.TerraformContentFacet;
+import org.sonatype.nexus.plugins.terraform.datastore.TerraformContentFacet;
 import org.sonatype.nexus.plugins.terraform.internal.AssetKind;
 import org.sonatype.nexus.plugins.terraform.internal.Attributes.TerraformAttributes;
 import org.sonatype.nexus.plugins.terraform.internal.util.TerraformDataUtils;

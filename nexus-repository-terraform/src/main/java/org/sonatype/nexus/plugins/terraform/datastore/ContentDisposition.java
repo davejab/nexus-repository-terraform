@@ -10,25 +10,23 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.plugins.terraform.content.internal.store;
-
-import javax.inject.Named;
-
-import org.sonatype.nexus.repository.content.store.FormatStoreModule;
-import org.sonatype.nexus.plugins.terraform.internal.TerraformFormat;
+package org.sonatype.nexus.plugins.terraform.datastore;
 
 /**
- * Configures the content store bindings for the 'terraform' format.
- *
  * @since 0.0.6
  */
-@Named(TerraformFormat.NAME)
-public class TerraformStoreModule
-    extends FormatStoreModule<TerraformContentRepositoryDAO,
-        TerraformComponentDAO,
-        TerraformAssetDAO,
-        TerraformAssetBlobDAO,
-        TerraformSearchDAO>
+public enum ContentDisposition
 {
-  // nothing to add...
+  INLINE("inline"),
+  ATTACHMENT("attachment");
+
+  private final String value;
+
+  ContentDisposition(final String value) {
+    this.value = value;
+  }
+
+  public String getValue() {
+    return value;
+  }
 }

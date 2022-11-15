@@ -10,23 +10,21 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.plugins.terraform.content;
+package org.sonatype.nexus.plugins.terraform.datastore.internal.browse;
+
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.sonatype.nexus.plugins.terraform.internal.TerraformFormat;
+import org.sonatype.nexus.repository.content.browse.AssetPathBrowseNodeGenerator;
 
 /**
  * @since 0.0.6
  */
-public enum ContentDisposition
+@Singleton
+@Named(TerraformFormat.NAME)
+public class TerraformBrowseNodeGenerator
+    extends AssetPathBrowseNodeGenerator
 {
-  INLINE("inline"),
-  ATTACHMENT("attachment");
-
-  private final String value;
-
-  ContentDisposition(final String value) {
-    this.value = value;
-  }
-
-  public String getValue() {
-    return value;
-  }
+  // nothing to add...
 }

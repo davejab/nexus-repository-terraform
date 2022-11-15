@@ -10,15 +10,36 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.plugins.terraform.content.internal.store;
+package org.sonatype.nexus.plugins.terraform.datastore.internal;
 
-import org.sonatype.nexus.repository.content.store.AssetBlobDAO;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+import org.sonatype.nexus.repository.Repository;
+import org.sonatype.nexus.repository.content.director.ContentDirector;
+import org.sonatype.nexus.repository.content.fluent.FluentComponent;
 
 /**
  * @since 0.0.6
  */
-public interface TerraformAssetBlobDAO
-        extends AssetBlobDAO
+@Named("terraform")
+@Singleton
+public class TerraformContentDirector
+        implements ContentDirector
 {
-  // nothing to add...
+  // TODO allow move? movement of content? No...
+  @Override
+  public boolean allowMoveTo(final Repository destination) {
+    return true;
+  }
+
+  @Override
+  public boolean allowMoveTo(final FluentComponent component, final Repository destination) {
+    return true;
+  }
+
+  @Override
+  public boolean allowMoveFrom(final Repository source) {
+    return true;
+  }
 }

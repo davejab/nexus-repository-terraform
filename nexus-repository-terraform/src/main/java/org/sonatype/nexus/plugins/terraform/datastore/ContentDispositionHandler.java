@@ -10,40 +10,40 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.plugins.terraform.content.internal;
+package org.sonatype.nexus.plugins.terraform.datastore;
 
 import javax.annotation.Nonnull;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.sonatype.nexus.repository.http.HttpResponses;
-import org.sonatype.nexus.repository.http.HttpStatus;
 import org.sonatype.nexus.repository.view.Context;
+import org.sonatype.nexus.repository.view.Handler;
 import org.sonatype.nexus.repository.view.Response;
-import org.sonatype.nexus.repository.view.handlers.IndexHtmlForwardHandler;
+
+import static org.sonatype.nexus.repository.http.HttpMethods.GET;
 
 /**
- * Handler which will forward current request to {@code {request.path}/index.html} or {@code {request.path}/index.htm}.
- * If there are no index.html and index.htm files then just proceed to avoid 404 error
+ * Handler to set Content-Disposition HTTP header
  *
  * @since 0.0.6
  */
 @Named
 @Singleton
-public class TerraformIndexHtmlForwardHandler
-    extends IndexHtmlForwardHandler
+public class ContentDispositionHandler
+    implements Handler
 {
+  public static final String CONTENT_DISPOSITION_CONFIG_KEY = "contentDisposition";
+
   @Nonnull
   @Override
   public Response handle(@Nonnull final Context context) throws Exception {
-    Response response = forward(context, context.getRequest().getPath() + ".");
-    if (HttpStatus.NOT_FOUND == response.getStatus().getCode()) {
-      response = super.handle(context);
-      if (HttpStatus.NOT_FOUND == response.getStatus().getCode()) {
-        return HttpResponses.notFound("You can’t browse this way");
-      }
+    Response response = context.proceed();
+    String action = context.getRequest().getAction();
+    if (GET.equals(action)) {
+      String contentDisposition = context.getRepository().getConfiguration().attributes("terraform")
+          .get(CONTENT_DISPOSITION_CONFIG_KEY, String.class, ContentDisposition.INLINE.name());
+      response.getHeaders().replace("Content-Disposition", ContentDisposition.valueOf(contentDisposition).getValue());
     }
-
     return response;
   }
 }

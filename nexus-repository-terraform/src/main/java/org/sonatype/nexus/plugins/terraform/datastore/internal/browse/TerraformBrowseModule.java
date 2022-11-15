@@ -10,15 +10,21 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.plugins.terraform.content.internal.store;
+package org.sonatype.nexus.plugins.terraform.datastore.internal.browse;
 
-import org.sonatype.nexus.repository.content.store.AssetDAO;
+import javax.inject.Named;
+
+import org.sonatype.nexus.plugins.terraform.internal.TerraformFormat;
+import org.sonatype.nexus.repository.content.browse.store.FormatBrowseModule;
 
 /**
+ * Configures the browse bindings for the 'terraform' format.
+ *
  * @since 0.0.6
  */
-public interface TerraformAssetDAO
-        extends AssetDAO
+@Named(TerraformFormat.NAME)
+public class TerraformBrowseModule
+    extends FormatBrowseModule<TerraformBrowseNodeDAO>
 {
   // nothing to add...
 }
