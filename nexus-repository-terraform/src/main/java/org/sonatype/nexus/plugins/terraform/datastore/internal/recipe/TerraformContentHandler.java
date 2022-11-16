@@ -19,7 +19,7 @@ import javax.inject.Singleton;
 import org.sonatype.goodies.common.ComponentSupport;
 import org.sonatype.nexus.plugins.terraform.datastore.TerraformContentFacet;
 import org.sonatype.nexus.plugins.terraform.internal.AssetKind;
-import org.sonatype.nexus.plugins.terraform.internal.Attributes.TerraformAttributes;
+import org.sonatype.nexus.plugins.terraform.internal.attributes.TerraformAttributes;
 import org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils;
 import org.sonatype.nexus.repository.Repository;
 import org.sonatype.nexus.repository.http.HttpResponses;
@@ -34,6 +34,7 @@ import static org.sonatype.nexus.repository.http.HttpMethods.DELETE;
 import static org.sonatype.nexus.repository.http.HttpMethods.GET;
 import static org.sonatype.nexus.repository.http.HttpMethods.HEAD;
 import static org.sonatype.nexus.repository.http.HttpMethods.PUT;
+import static org.sonatype.nexus.plugins.terraform.internal.attributes.TerraformParser.parse;
 
 /**
  * Terraform content hosted handler.
@@ -68,7 +69,7 @@ public class TerraformContentHandler
         Payload content = context.getRequest().getPayload();
         TokenMatcher.State matcherState = new TerraformPathUtils().matcherState(context);
         AssetKind assetKind = context.getAttributes().require(AssetKind.class);
-        TerraformAttributes attributes = TerraformAttributes.parse(assetKind, matcherState);
+        TerraformAttributes attributes = parse(assetKind, matcherState);
         storage.put(path, content, attributes);
         return HttpResponses.created();
       }

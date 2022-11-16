@@ -12,6 +12,23 @@
  */
 package org.sonatype.nexus.plugins.terraform.datastore.internal.recipe
 
+import org.sonatype.nexus.plugins.terraform.datastore.TerraformContentFacet
+
+import org.sonatype.nexus.plugins.terraform.internal.matcher.DiscoveryMatcher
+import org.sonatype.nexus.plugins.terraform.internal.matcher.ProviderArchiveMatcher
+import org.sonatype.nexus.plugins.terraform.internal.matcher.ProviderVersionMatcher
+import org.sonatype.nexus.plugins.terraform.internal.matcher.ProviderVersionsMatcher
+import org.sonatype.nexus.plugins.terraform.internal.matcher.ProvidersMatcher
+import org.sonatype.nexus.plugins.terraform.internal.security.TerraformSecurityFacet
+import org.sonatype.nexus.repository.RecipeSupport
+import org.sonatype.nexus.repository.content.browse.BrowseFacet
+import org.sonatype.nexus.repository.content.maintenance.SingleAssetMaintenanceFacet
+import org.sonatype.nexus.repository.content.search.SearchFacet
+import org.sonatype.nexus.repository.security.SecurityHandler
+import org.sonatype.nexus.repository.view.handlers.ContentHeadersHandler
+import org.sonatype.nexus.repository.view.handlers.ExceptionHandler
+import org.sonatype.nexus.repository.view.handlers.TimingHandler
+
 import javax.annotation.Nonnull
 import javax.annotation.Priority
 import javax.inject.Inject
@@ -52,9 +69,54 @@ import static org.sonatype.nexus.repository.view.matchers.logic.LogicMatchers.an
 @Priority(Integer.MAX_VALUE)
 @Singleton
 class TerraformProxyRecipe
-    extends TerraformRecipeSupport
+    extends RecipeSupport
 {
   public static final String NAME = 'terraform-proxy'
+
+  @Inject
+  ExceptionHandler exceptionHandler
+
+  @Inject
+  TimingHandler timingHandler
+
+  @Inject
+  SecurityHandler securityHandler
+
+  @Inject
+  PartialFetchHandler partialFetchHandler
+
+  @Inject
+  ConditionalRequestHandler conditionalRequestHandler
+
+  @Inject
+  ContentHeadersHandler contentHeadersHandler
+
+  @Inject
+  ProxyHandler proxyHandler
+
+  @Inject
+  NegativeCacheHandler negativeCacheHandler
+
+  @Inject
+  HandlerContributor handlerContributor
+
+  @Inject
+  Provider<TerraformContentFacet> contentFacet
+
+  @Inject
+  Provider<TerraformProxyFacet> proxyFacet
+
+  @Inject
+  Provider<TerraformSecurityFacet> securityFacet
+
+  @Inject
+  Provider<ConfigurableViewFacet> viewFacet
+
+  @Inject
+  Provider<SearchFacet> searchFacet
+
+  @Inject
+  Provider<SingleAssetMaintenanceFacet> maintenanceFacet
 
   @Inject
   Provider<HttpClientFacet> httpClientFacet
@@ -63,25 +125,10 @@ class TerraformProxyRecipe
   Provider<NegativeCacheFacet> negativeCacheFacet
 
   @Inject
-  Provider<TerraformProxyFacet> proxyFacet
-
-  @Inject
   Provider<PurgeUnusedFacet> purgeUnusedFacet
 
   @Inject
-  NegativeCacheHandler negativeCacheHandler
-
-  @Inject
-  PartialFetchHandler partialFetchHandler
-
-  @Inject
-  ProxyHandler proxyHandler
-
-  @Inject
-  ConditionalRequestHandler conditionalRequestHandler
-
-  @Inject
-  HandlerContributor handlerContributor
+  Provider<BrowseFacet> browseFacet
 
   @Inject
   TerraformProxyRecipe(@Named(ProxyType.NAME) final Type type,
@@ -95,14 +142,34 @@ class TerraformProxyRecipe
   void apply(final @Nonnull Repository repository) throws Exception {
     repository.attach(securityFacet.get())
     repository.attach(configure(viewFacet.get()))
+    repository.attach(contentFacet.get())
     repository.attach(httpClientFacet.get())
     repository.attach(negativeCacheFacet.get())
-    repository.attach(proxyFacet.get())
-    repository.attach(contentFacet.get())
     repository.attach(maintenanceFacet.get())
+    repository.attach(proxyFacet.get())
     repository.attach(searchFacet.get())
     repository.attach(browseFacet.get())
     repository.attach(purgeUnusedFacet.get())
+  }
+
+  Route.Builder newDiscoveryRouteBuilder() {
+    return new Route.Builder().matcher(new DiscoveryMatcher().matcher());
+  }
+
+  Route.Builder newProvidersRouteBuilder() {
+    return new Route.Builder().matcher(new ProvidersMatcher().matcher());
+  }
+
+  Route.Builder newProviderVersionsRouteBuilder() {
+    return new Route.Builder().matcher(new ProviderVersionsMatcher().matcher());
+  }
+
+  Route.Builder newProviderVersionRouteBuilder() {
+    return new Route.Builder().matcher(new ProviderVersionMatcher().matcher());
+  }
+
+  Route.Builder newProviderArchiveRouteBuilder() {
+    return new Route.Builder().matcher(new ProviderArchiveMatcher().matcher());
   }
 
   /**
@@ -117,7 +184,6 @@ class TerraformProxyRecipe
     builder.route(new Route.Builder()
         .matcher(and(new ActionMatcher(HttpMethods.GET), new SuffixMatcher('/')))
         .handler(timingHandler)
-        .handler(indexHtmlForwardHandler)
         .create()
     )
 
@@ -137,7 +203,6 @@ class TerraformProxyRecipe
               .handler(partialFetchHandler)
               .handler(contentHeadersHandler)
               .handler(conditionalRequestHandler)
-              .handler(lastDownloadedHandler)
               .handler(proxyHandler)
               .create())
     }

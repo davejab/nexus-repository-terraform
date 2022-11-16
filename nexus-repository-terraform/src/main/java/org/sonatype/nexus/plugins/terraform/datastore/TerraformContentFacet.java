@@ -16,11 +16,9 @@ import java.io.IOException;
 import java.util.Optional;
 
 import org.sonatype.nexus.common.hash.HashAlgorithm;
-import org.sonatype.nexus.plugins.terraform.internal.Attributes.TerraformAttributes;
+import org.sonatype.nexus.plugins.terraform.internal.attributes.TerraformAttributes;
 import org.sonatype.nexus.repository.Facet;
-import org.sonatype.nexus.repository.Repository;
 import org.sonatype.nexus.repository.content.facet.ContentFacet;
-import org.sonatype.nexus.repository.content.fluent.FluentAsset;
 import org.sonatype.nexus.repository.view.Content;
 import org.sonatype.nexus.repository.view.Payload;
 
@@ -41,9 +39,6 @@ public interface TerraformContentFacet
   ImmutableList<HashAlgorithm> HASHING = ImmutableList.of(MD5, SHA1);
 
   Optional<Content> get(String path) throws IOException;
-
-  FluentAsset getOrCreateAsset(Repository repository, String componentName, String componentGroup,
-                               String assetName, TerraformAttributes attributes);
 
   Content put(String path, Payload content, TerraformAttributes attributes) throws IOException;
 

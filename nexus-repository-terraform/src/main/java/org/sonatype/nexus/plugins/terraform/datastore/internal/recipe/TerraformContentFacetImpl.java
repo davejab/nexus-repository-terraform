@@ -19,9 +19,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.sonatype.nexus.plugins.terraform.datastore.TerraformContentFacet;
-import org.sonatype.nexus.plugins.terraform.internal.Attributes.TerraformAttributes;
+import org.sonatype.nexus.plugins.terraform.internal.attributes.TerraformAttributes;
 import org.sonatype.nexus.plugins.terraform.internal.TerraformFormat;
-import org.sonatype.nexus.repository.Repository;
 import org.sonatype.nexus.repository.content.facet.ContentFacet;
 import org.sonatype.nexus.repository.content.facet.ContentFacetSupport;
 import org.sonatype.nexus.repository.content.fluent.FluentAsset;
@@ -49,18 +48,6 @@ public class TerraformContentFacetImpl
   @Override
   public Optional<Content> get(final String path) throws IOException {
     return assets().path(path).find().map(FluentAsset::download);
-  }
-
-  @Override
-  public FluentAsset getOrCreateAsset(
-          final Repository repository, final String componentName, final String componentGroup, final String assetName, TerraformAttributes attributes)
-  {
-    return assets().path(componentName)
-        .attributes(TerraformFormat.NAME, attributes)
-        .component(components()
-            .name(componentName)
-            .getOrCreate())
-        .save();
   }
 
   @Override
