@@ -17,6 +17,8 @@ import org.sonatype.nexus.plugins.terraform.internal.AssetKind;
 import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.DISCOVERY_PATH;
 
 /**
+ * Discovery path matcher
+ *
  * @since 0.0.6
  */
 public class DiscoveryMatcher extends TerraformMatcher {

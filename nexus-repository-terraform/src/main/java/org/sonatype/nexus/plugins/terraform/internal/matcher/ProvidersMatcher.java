@@ -17,6 +17,8 @@ import org.sonatype.nexus.plugins.terraform.internal.AssetKind;
 import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.PROVIDERS_PATH;
 
 /**
+ * Provider path matcher
+ *
  * @since 0.0.6
  */
 public class ProvidersMatcher extends TerraformMatcher {

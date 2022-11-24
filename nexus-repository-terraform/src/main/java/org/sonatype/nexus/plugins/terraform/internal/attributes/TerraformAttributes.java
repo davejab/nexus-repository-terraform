@@ -13,6 +13,8 @@
 package org.sonatype.nexus.plugins.terraform.internal.attributes;
 
 /**
+ * Terraform content attributes
+ *
  * @since 0.0.6
  */
 public class TerraformAttributes

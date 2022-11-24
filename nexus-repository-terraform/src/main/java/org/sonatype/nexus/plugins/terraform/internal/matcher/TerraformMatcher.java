@@ -22,6 +22,8 @@ import static org.sonatype.nexus.repository.http.HttpMethods.GET;
 import static org.sonatype.nexus.repository.http.HttpMethods.HEAD;
 
 /**
+ * Abstract terraform path matcher
+ *
  * @since 0.0.6
  */
 public abstract class TerraformMatcher {
