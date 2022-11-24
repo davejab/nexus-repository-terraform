@@ -6,28 +6,37 @@ import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher;
 public class TerraformParser {
 
   public static TerraformAttributes parse(final AssetKind asset, final TokenMatcher.State matcherState) {
-
-    TerraformAttributes attributes = new TerraformAttributes();
-
     switch (asset) {
       case PROVIDER_VERSIONS:
-        attributes.setType(matcherState.getTokens().get("type"));
-        attributes.setHostname(matcherState.getTokens().get("hostname"));
-        attributes.setNamespace(matcherState.getTokens().get("namespace"));
+        return getProviderVersionsAttributes(matcherState);
       case PROVIDER_VERSION:
-        attributes.setType(matcherState.getTokens().get("type"));
-        attributes.setHostname(matcherState.getTokens().get("hostname"));
-        attributes.setNamespace(matcherState.getTokens().get("namespace"));
-        attributes.setVersion(matcherState.getTokens().get("version"));
+        return getProviderVersionAttributes(matcherState);
       case PROVIDER_ARCHIVE:
-        attributes.setType(matcherState.getTokens().get("type"));
-        attributes.setHostname(matcherState.getTokens().get("hostname"));
-        attributes.setNamespace(matcherState.getTokens().get("namespace"));
-        attributes.setVersion(matcherState.getTokens().get("version"));
-        attributes.setProvider(matcherState.getTokens().get("provider"));
-        attributes.setOs(matcherState.getTokens().get("os"));
-        attributes.setArch(matcherState.getTokens().get("arch"));
+        return getProviderArchiveAttributes(matcherState);
+      default:
+        return new TerraformAttributes();
     }
+  }
+
+  private static TerraformAttributes getProviderVersionsAttributes(TokenMatcher.State state){
+    TerraformAttributes attributes = new TerraformAttributes();
+    attributes.setType(state.getTokens().get("type"));
+    attributes.setHostname(state.getTokens().get("hostname"));
+    attributes.setNamespace(state.getTokens().get("namespace"));
+    return attributes;
+  }
+
+  private static TerraformAttributes getProviderVersionAttributes(TokenMatcher.State state){
+    TerraformAttributes attributes = getProviderVersionsAttributes(state);
+    attributes.setVersion(state.getTokens().get("version"));
+    return attributes;
+  }
+
+  private static TerraformAttributes getProviderArchiveAttributes(TokenMatcher.State state){
+    TerraformAttributes attributes = getProviderVersionAttributes(state);
+    attributes.setProvider(state.getTokens().get("provider"));
+    attributes.setOs(state.getTokens().get("os"));
+    attributes.setArch(state.getTokens().get("arch"));
     return attributes;
   }
 
