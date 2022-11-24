@@ -33,16 +33,16 @@ public class TerraformDataStoreProxyIT
     assertThat(status(proxyClient.get(BAD_PATH)), is(HttpStatus.NOT_FOUND));
   }
 
-//  @Test
-//  public void retrieveDiscoveryJSONFromProxyWhenRemoteOnline() throws Exception {
-//    assertThat(status(proxyClient.get(DISCOVERY_PATH)), is(HttpStatus.OK));
-//
-//    final Asset asset = findAsset(proxyRepo, "/" + DISCOVERY_PATH).get();
-//
-//    assertThat(asset.path(), is(equalTo("/" + DISCOVERY_PATH)));
-////    assertThat(asset.attributes()., is(equalTo(MIME_TYPE_JSON)));
-////    assertThat(asset.format(), is(equalTo(FORMAT_NAME)));
-//  }
+  @Test
+  public void retrieveDiscoveryJSONFromProxyWhenRemoteOnline() throws Exception {
+    assertThat(status(proxyClient.get(DISCOVERY_PATH)), is(HttpStatus.OK));
+
+    final Asset asset = findAsset(proxyRepo, "/" + DISCOVERY_PATH).get();
+
+    assertThat(asset.path(), is(equalTo("/" + DISCOVERY_PATH)));
+//    assertThat(asset.attributes()., is(equalTo(MIME_TYPE_JSON)));
+//    assertThat(asset.format(), is(equalTo(FORMAT_NAME)));
+  }
 
   @Test
   public void retrieveIndexJSONFromProxyWhenRemoteOnline() throws Exception {
