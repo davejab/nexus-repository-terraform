@@ -12,34 +12,16 @@
  */
 package org.sonatype.nexus.plugins.terraform.internal;
 
-import javax.annotation.Nonnull;
-
-import org.sonatype.nexus.repository.cache.CacheControllerHolder.CacheType;
-
-import static org.sonatype.nexus.repository.cache.CacheControllerHolder.CONTENT;
-import static org.sonatype.nexus.repository.cache.CacheControllerHolder.METADATA;
-
 /**
  * Asset kinds for Terraform.
  */
 public enum AssetKind
 {
-  DISCOVERY(METADATA),
-  MODULES(METADATA),
-  MODULE_VERSIONS(METADATA),
-  PROVIDERS(METADATA),
-  PROVIDER_VERSIONS(METADATA),
-  PROVIDER_VERSION(METADATA),
-  PROVIDER_ARCHIVE(CONTENT);
-
-  private final CacheType cacheType;
-
-  AssetKind(final CacheType cacheType) {
-    this.cacheType = cacheType;
-  }
-
-  @Nonnull
-  public CacheType getCacheType() {
-    return cacheType;
-  }
+  DISCOVERY,
+  MODULES,
+  MODULE_VERSIONS,
+  PROVIDERS,
+  PROVIDER_VERSIONS,
+  PROVIDER_VERSION,
+  PROVIDER_ARCHIVE;
 }
