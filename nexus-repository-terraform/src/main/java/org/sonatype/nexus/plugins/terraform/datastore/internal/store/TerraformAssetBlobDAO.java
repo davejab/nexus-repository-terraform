@@ -12,9 +12,12 @@
  */
 package org.sonatype.nexus.plugins.terraform.datastore.internal.store;
 
+import org.sonatype.nexus.datastore.api.ContentDataAccess;
 import org.sonatype.nexus.repository.content.store.AssetBlobDAO;
 
 /**
+ * Terraform asset blob {@link ContentDataAccess}.
+ *
  * @since 0.0.6
  */
 public interface TerraformAssetBlobDAO
