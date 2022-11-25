@@ -12,15 +12,13 @@
  */
 package org.sonatype.nexus.plugins.terraform.internal.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.mockito.Mock;
 import org.sonatype.goodies.testsupport.TestSupport;
-import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher;
+import org.sonatype.nexus.plugins.terraform.internal.TerraformTestHelper;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
+import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -32,67 +30,40 @@ public class TerraformPathUtilsTest
 {
   private TerraformPathUtils underTest;
 
+  private TerraformTestHelper testHelper;
+
   @Mock
   TokenMatcher.State state;
-
-  private Map<String, String> tokens;
-
-  private String discovery, api, providerPath, modulesPath, provider,
-          module, namespace, name, hostname, type, version, os, arch,
-          providerVersionsPath, providerVersionPath,
-          providerArchivePath, providerVersionDownloadPath;
 
   @Before
   public void setUp() {
     underTest = new TerraformPathUtils();
-
-    discovery = "/.well-known/terraform.json";
-    api = "v1";
-    provider = "provider";
-    module = "module";
-    providerPath = String.format("%s/%ss", api, provider);
-    modulesPath = String.format("%s/%ss", api, module);
-    namespace = "namespace";
-    name = "name";
-    hostname = "hostname";
-    type = "type";
-    version = "version";
-    os = "os";
-    arch = "arch";
-
-    tokens = setupTokens();
-    when(state.getTokens()).thenReturn(tokens);
-
-    providerVersionsPath = String.format("/%s/%s/%s/%s/index.json", providerPath, hostname, namespace, type);
-    providerVersionPath = String.format("/%s/%s/%s/%s/%s.json", providerPath, hostname, namespace, type, version);
-    providerArchivePath = String.format("/%s/%s/%s/%s/%s-%s_%s_%s_%s.zip",
-            providerPath, hostname, namespace, type, provider, type, version, os, arch);
-    providerVersionDownloadPath = String.format("/%s/%s/%s/%s/download/%s/%s",
-            providerPath, namespace, type, version, os, arch);
+    testHelper = new TerraformTestHelper();
+    when(state.getTokens()).thenReturn(testHelper.getMatcherTokens());
   }
 
   @Test
   public void discoveryPath() {
     String result = underTest.discoveryPath(state);
-    assertThat(result, is(equalTo(discovery)));
+    assertThat(result, is(equalTo(testHelper.discovery)));
   }
   @Test
   public void modulesPath() {
-    String expect = String.format("/%s/index.json", modulesPath);
+    String expect = String.format("/%s/index.json", testHelper.modulesPath);
     String result = underTest.modulesPath(state);
     assertThat(result, is(equalTo(expect)));
   }
 
   @Test
   public void moduleVersionsPath() {
-    String expect = String.format("/%s/%s/%s/%s/index.json", modulesPath, namespace, name, provider);
+    String expect = String.format("/%s/%s/%s/%s/index.json", testHelper.modulesPath, testHelper.namespace, testHelper.name, testHelper.provider);
     String result = underTest.moduleVersionsPath(state);
     assertThat(result, is(equalTo(expect)));
   }
 
   @Test
   public void providersPath() {
-    String expect = String.format("/%s/index.json", providerPath);
+    String expect = String.format("/%s/index.json", testHelper.providerPath);
     String result = underTest.providersPath(state);
     assertThat(result, is(equalTo(expect)));
   }
@@ -100,50 +71,38 @@ public class TerraformPathUtilsTest
   @Test
   public void providerVersionsPath() {
     String result = underTest.providerVersionsPath(state);
-    assertThat(result, is(equalTo(providerVersionsPath)));
+    assertThat(result, is(equalTo(testHelper.providerVersionsPath)));
   }
 
   @Test
   public void providerVersionPath() {
     String result = underTest.providerVersionPath(state);
-    assertThat(result, is(equalTo(providerVersionPath)));
+    assertThat(result, is(equalTo(testHelper.providerVersionPath)));
   }
 
   @Test
   public void providerArchivePath() {
     String result = underTest.providerArchivePath(state);
-    assertThat(result, is(equalTo(providerArchivePath)));
+    assertThat(result, is(equalTo(testHelper.providerArchivePath)));
   }
 
   @Test
   public void toProviderVersionsPath() {
-    String expect = String.format("/%s/%s/%s", providerPath, namespace, type);
-    String result = underTest.toProviderVersionsPath(providerVersionsPath, state);
+    String expect = String.format("/%s/%s/%s", testHelper.providerPath, testHelper.namespace, testHelper.type);
+    String result = underTest.toProviderVersionsPath(testHelper.providerVersionsPath, state);
     assertThat(result, is(equalTo(expect)));
   }
 
   @Test
   public void toProviderVersionDownloadPath() {
-    String result = underTest.toProviderVersionDownloadPath(providerVersionPath, os, arch, state);
-    assertThat(result, is(equalTo(providerVersionDownloadPath)));
+    String result = underTest.toProviderVersionDownloadPath(testHelper.providerVersionPath, testHelper.os, testHelper.arch, state);
+    assertThat(result, is(equalTo(testHelper.providerVersionDownloadPath)));
   }
 
   @Test
   public void toProviderArchiveDownloadPath() {
-    String result = underTest.toProviderArchiveDownloadPath(providerArchivePath, state);
-    assertThat(result, is(equalTo(providerVersionDownloadPath)));
+    String result = underTest.toProviderArchiveDownloadPath(testHelper.providerArchivePath, state);
+    assertThat(result, is(equalTo(testHelper.providerVersionDownloadPath)));
   }
 
-  private Map<String, String> setupTokens() {
-    Map<String, String> tokens = new HashMap<>();
-    tokens.put(namespace, namespace);
-    tokens.put(name, name);
-    tokens.put(provider, provider);
-    tokens.put(hostname, hostname);
-    tokens.put(type, type);
-    tokens.put(version, version);
-    tokens.put(os, os);
-    tokens.put(arch, arch);
-    return tokens;
-  }
 }
