@@ -5,7 +5,8 @@ import java.util.HashMap;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TerraformVersions {
+public class TerraformVersions
+{
 
   private String[] versions;
 

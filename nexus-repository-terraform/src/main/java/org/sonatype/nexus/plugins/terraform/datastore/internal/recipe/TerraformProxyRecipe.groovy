@@ -12,8 +12,15 @@
  */
 package org.sonatype.nexus.plugins.terraform.datastore.internal.recipe
 
-import org.sonatype.nexus.plugins.terraform.datastore.TerraformContentFacet
+import javax.annotation.Nonnull
+import javax.annotation.Priority
+import javax.inject.Inject
+import javax.inject.Named
+import javax.inject.Provider
+import javax.inject.Singleton
 
+import org.sonatype.nexus.plugins.terraform.datastore.TerraformContentFacet
+import org.sonatype.nexus.plugins.terraform.internal.TerraformFormat
 import org.sonatype.nexus.plugins.terraform.internal.matcher.DiscoveryMatcher
 import org.sonatype.nexus.plugins.terraform.internal.matcher.ProviderArchiveMatcher
 import org.sonatype.nexus.plugins.terraform.internal.matcher.ProviderVersionMatcher
@@ -28,14 +35,6 @@ import org.sonatype.nexus.repository.security.SecurityHandler
 import org.sonatype.nexus.repository.view.handlers.ContentHeadersHandler
 import org.sonatype.nexus.repository.view.handlers.ExceptionHandler
 import org.sonatype.nexus.repository.view.handlers.TimingHandler
-
-import javax.annotation.Nonnull
-import javax.annotation.Priority
-import javax.inject.Inject
-import javax.inject.Named
-import javax.inject.Provider
-import javax.inject.Singleton
-
 import org.sonatype.nexus.repository.Format
 import org.sonatype.nexus.repository.Repository
 import org.sonatype.nexus.repository.Type
@@ -46,7 +45,6 @@ import org.sonatype.nexus.repository.http.PartialFetchHandler
 import org.sonatype.nexus.repository.httpclient.HttpClientFacet
 import org.sonatype.nexus.repository.proxy.ProxyHandler
 import org.sonatype.nexus.repository.purge.PurgeUnusedFacet
-import org.sonatype.nexus.plugins.terraform.internal.TerraformFormat
 import org.sonatype.nexus.repository.types.ProxyType
 import org.sonatype.nexus.repository.view.ConfigurableViewFacet
 import org.sonatype.nexus.repository.view.Route

@@ -1,19 +1,22 @@
 package org.sonatype.nexus.plugins.terraform.internal.attributes;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
 import org.sonatype.goodies.testsupport.TestSupport;
 import org.sonatype.nexus.plugins.terraform.internal.TerraformTestHelper;
 import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+
+import static org.sonatype.nexus.plugins.terraform.internal.AssetKind.PROVIDER_VERSIONS;
+import static org.sonatype.nexus.plugins.terraform.internal.AssetKind.PROVIDER_VERSION;
+import static org.sonatype.nexus.plugins.terraform.internal.AssetKind.PROVIDER_ARCHIVE;
+import static org.sonatype.nexus.plugins.terraform.internal.attributes.TerraformParser.parse;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
-
-import static org.sonatype.nexus.plugins.terraform.internal.AssetKind.*;
-import static org.sonatype.nexus.plugins.terraform.internal.attributes.TerraformParser.parse;
 
 public class TerraformParserTest
         extends TestSupport

@@ -12,13 +12,13 @@
  */
 package org.sonatype.nexus.plugins.terraform.internal.util;
 
-import org.mockito.Mock;
 import org.sonatype.goodies.testsupport.TestSupport;
 import org.sonatype.nexus.plugins.terraform.internal.TerraformTestHelper;
+import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher;
 
+import org.mockito.Mock;
 import org.junit.Before;
 import org.junit.Test;
-import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;

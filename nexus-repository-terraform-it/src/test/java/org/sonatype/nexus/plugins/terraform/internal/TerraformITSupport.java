@@ -16,8 +16,6 @@ import java.net.URL;
 
 import javax.annotation.Nonnull;
 
-import org.junit.After;
-import org.junit.Before;
 import org.sonatype.goodies.httpfixture.server.fluent.Behaviours;
 import org.sonatype.goodies.httpfixture.server.fluent.Server;
 import org.sonatype.nexus.pax.exam.NexusPaxExamSupport;
@@ -26,6 +24,8 @@ import org.sonatype.nexus.repository.Repository;
 import org.sonatype.nexus.testsuite.testsupport.RepositoryITSupport;
 
 import org.junit.Rule;
+import org.junit.After;
+import org.junit.Before;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.DISCOVERY_PATH;

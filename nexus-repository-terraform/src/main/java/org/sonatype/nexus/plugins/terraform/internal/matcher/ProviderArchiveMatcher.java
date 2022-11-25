@@ -20,8 +20,11 @@ import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUt
  *
  * @since 0.0.6
  */
-public class ProviderArchiveMatcher extends TerraformMatcher {
+public class ProviderArchiveMatcher
+        extends TerraformMatcher
+{
   protected ProviderArchiveMatcher() {
-    super("/"+PROVIDERS_PATH+"/{hostname}/{namespace}/{type}/{provider}-{type}_{version}_{os}_{arch}.zip", PROVIDER_ARCHIVE);
+    super("/"+PROVIDERS_PATH+"/{hostname}/{namespace}/{type}/{provider}-{type}_{version}_{os}_{arch}.zip",
+            PROVIDER_ARCHIVE);
   }
 }

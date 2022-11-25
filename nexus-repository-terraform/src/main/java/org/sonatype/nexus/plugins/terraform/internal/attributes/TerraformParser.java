@@ -3,7 +3,8 @@ package org.sonatype.nexus.plugins.terraform.internal.attributes;
 import org.sonatype.nexus.plugins.terraform.internal.AssetKind;
 import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher;
 
-public class TerraformParser {
+public class TerraformParser
+{
 
   public static TerraformAttributes parse(final AssetKind asset, final TokenMatcher.State matcherState) {
     switch (asset) {

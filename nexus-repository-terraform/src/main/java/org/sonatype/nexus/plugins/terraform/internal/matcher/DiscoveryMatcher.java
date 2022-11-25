@@ -21,7 +21,9 @@ import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUt
  *
  * @since 0.0.6
  */
-public class DiscoveryMatcher extends TerraformMatcher {
+public class DiscoveryMatcher
+        extends TerraformMatcher
+{
     public DiscoveryMatcher() {
       super("/"+DISCOVERY_PATH, AssetKind.DISCOVERY);
     }

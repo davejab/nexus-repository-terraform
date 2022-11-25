@@ -12,9 +12,10 @@
  */
 package org.sonatype.nexus.plugins.terraform.orient;
 
-import org.junit.Test;
 import org.sonatype.nexus.repository.http.HttpStatus;
 import org.sonatype.nexus.repository.storage.Asset;
+
+import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;

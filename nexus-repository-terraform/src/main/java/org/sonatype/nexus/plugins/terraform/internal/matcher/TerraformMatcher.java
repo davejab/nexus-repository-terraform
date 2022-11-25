@@ -26,7 +26,8 @@ import static org.sonatype.nexus.repository.http.HttpMethods.HEAD;
  *
  * @since 0.0.6
  */
-public abstract class TerraformMatcher {
+public abstract class TerraformMatcher
+{
 
   private String pattern;
   private AssetKind asset;

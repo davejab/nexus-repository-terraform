@@ -21,7 +21,9 @@ import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUt
  *
  * @since 0.0.6
  */
-public class ProviderVersionMatcher extends TerraformMatcher {
+public class ProviderVersionMatcher
+        extends TerraformMatcher
+{
   protected ProviderVersionMatcher() {
     super("/"+PROVIDERS_PATH+"/{hostname}/{namespace}/{type}/{version}.json", AssetKind.PROVIDER_VERSION);
   }

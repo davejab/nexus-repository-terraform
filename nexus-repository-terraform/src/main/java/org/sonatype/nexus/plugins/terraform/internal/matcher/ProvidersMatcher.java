@@ -21,7 +21,9 @@ import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUt
  *
  * @since 0.0.6
  */
-public class ProvidersMatcher extends TerraformMatcher {
+public class ProvidersMatcher
+        extends TerraformMatcher
+{
   protected ProvidersMatcher() {
     super("/"+PROVIDERS_PATH, AssetKind.PROVIDERS);
   }

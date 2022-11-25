@@ -12,11 +12,12 @@
  */
 package org.sonatype.nexus.plugins.terraform.datastore;
 
-import org.junit.Test;
+import java.util.LinkedHashMap;
+
 import org.sonatype.nexus.repository.http.HttpStatus;
 import org.sonatype.nexus.repository.content.Asset;
 
-import java.util.LinkedHashMap;
+import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;

@@ -1,6 +1,7 @@
 package org.sonatype.nexus.plugins.terraform.internal.util.json.model;
 
-public class MirrorUrl {
+public class MirrorUrl
+{
 
   private String url;
 

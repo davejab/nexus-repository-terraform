@@ -1,14 +1,10 @@
 package org.sonatype.nexus.plugins.terraform.internal;
 
-import org.mockito.Mock;
-import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Mockito.when;
-
-public class TerraformTestHelper {
+public class TerraformTestHelper
+{
 
   public String discovery, api, provider, module, providerPath, modulesPath, namespace, name, hostname, type, version,
           os, arch, providerVersionsPath, providerVersionPath, providerArchivePath, providerVersionDownloadPath;

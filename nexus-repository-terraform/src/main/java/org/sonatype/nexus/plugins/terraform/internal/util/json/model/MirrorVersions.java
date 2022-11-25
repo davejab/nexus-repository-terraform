@@ -2,7 +2,8 @@ package org.sonatype.nexus.plugins.terraform.internal.util.json.model;
 
 import java.util.HashMap;
 
-public class MirrorVersions {
+public class MirrorVersions
+{
 
   private HashMap<String,MirrorVersion> versions;
 
