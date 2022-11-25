@@ -16,22 +16,87 @@ import java.net.URL;
 
 import javax.annotation.Nonnull;
 
+import org.sonatype.goodies.httpfixture.server.fluent.Behaviours;
+import org.sonatype.goodies.httpfixture.server.fluent.Server;
 import org.sonatype.nexus.pax.exam.NexusPaxExamSupport;
 import org.sonatype.nexus.plugins.terraform.internal.fixtures.RepositoryRuleTerraform;
 import org.sonatype.nexus.repository.Repository;
-import org.sonatype.nexus.repository.storage.Asset;
-import org.sonatype.nexus.repository.storage.MetadataNodeEntityAdapter;
-import org.sonatype.nexus.repository.storage.StorageFacet;
-import org.sonatype.nexus.repository.storage.StorageTx;
 import org.sonatype.nexus.testsuite.testsupport.RepositoryITSupport;
 
 import org.junit.Rule;
+import org.junit.After;
+import org.junit.Before;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.DISCOVERY_PATH;
+import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.PROVIDERS_PATH;
 
 public class TerraformITSupport
     extends RepositoryITSupport
 {
+  protected static final String FORMAT_NAME = "terraform";
+
+  protected static final String EXTENSION_JSON = ".json";
+
+  protected static final String EXTENSION_ZIP = ".zip";
+
+  protected static final String MIME_TYPE_JSON = "application/json";
+
+  protected static final String MIME_TYPE_ZIP = "application/zip";
+
+  protected static final String BAD_PATH = "this/path/is/bad";
+
+  protected static final String HOSTNAME = "registry.terraform.io";
+
+  protected static final String NAMESPACE = "hashicorp";
+
+  protected static final String TYPE = "terraform";
+
+  protected static final String VERSION = "0.1.0";
+
+  protected static final String OS = "linux";
+
+  protected static final String ARCH = "amd64";
+
+  protected static final String PROVIDER_PATH = "/" + PROVIDERS_PATH + "/" + HOSTNAME + "/" + NAMESPACE + "/" + TYPE;
+
+  protected static final String PROVIDER_INDEX = PROVIDER_PATH + "/index" + EXTENSION_JSON;
+
+  protected static final String PROVIDER_VERSION = PROVIDER_PATH + "/" + VERSION + EXTENSION_JSON;
+
+  protected static final String PROVIDER_ZIP = PROVIDER_PATH +
+          "/terraform-provider-" + TYPE + "_" + VERSION + "_" + OS + "_" + ARCH + EXTENSION_ZIP;
+
+  protected static final String REMOTE_PROVIDER_PATH = PROVIDERS_PATH + "/" + NAMESPACE + "/" + TYPE;
+
+  protected static final String REMOTE_DOWNLOAD_PATH = REMOTE_PROVIDER_PATH + "/" + VERSION +
+          "/download/" + OS + "/" + ARCH;
+
+  protected TerraformClient proxyClient;
+
+  protected Repository proxyRepo;
+
+  protected Server server;
+
+  @Before
+  public void setup() throws Exception {
+    server = Server.withPort(0)
+            .serve("/" + DISCOVERY_PATH)
+            .withBehaviours(Behaviours.file(testData.resolveFile(FORMAT_NAME + EXTENSION_JSON)))
+            .serve("/" + REMOTE_PROVIDER_PATH)
+            .withBehaviours(Behaviours.file(testData.resolveFile(TYPE)))
+            .serve("/" + REMOTE_DOWNLOAD_PATH)
+            .withBehaviours(Behaviours.file(testData.resolveFile(ARCH)))
+            .start();
+    proxyRepo = repos.createTerraformProxy("terraform-test-proxy", server.getUrl().toExternalForm());
+    proxyClient = terraformClient(proxyRepo);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    server.stop();
+  }
+
   @Rule
   public RepositoryRuleTerraform repos = new RepositoryRuleTerraform(() -> repositoryManager);
 
@@ -52,20 +117,10 @@ public class TerraformITSupport
 
   protected TerraformClient terraformClient(final URL repositoryUrl) throws Exception {
     return new TerraformClient(
-        clientBuilder(repositoryUrl).build(),
-        clientContext(),
-        repositoryUrl.toURI()
+            clientBuilder(repositoryUrl).build(),
+            clientContext(),
+            repositoryUrl.toURI()
     );
   }
 
-  public static Asset findAsset(Repository repository, String path) {
-    try (StorageTx tx = getStorageTx(repository)) {
-      tx.begin();
-      return tx.findAssetWithProperty(MetadataNodeEntityAdapter.P_NAME, path, tx.findBucket(repository));
-    }
-  }
-
-  protected static StorageTx getStorageTx(final Repository repository) {
-    return repository.facet(StorageFacet.class).txSupplier().get();
-  }
 }

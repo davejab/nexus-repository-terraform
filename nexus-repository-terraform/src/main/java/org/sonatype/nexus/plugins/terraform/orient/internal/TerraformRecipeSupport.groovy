@@ -10,7 +10,7 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.plugins.terraform.internal
+package org.sonatype.nexus.plugins.terraform.orient.internal
 
 import javax.inject.Inject
 import javax.inject.Provider
@@ -31,22 +31,11 @@ import org.sonatype.nexus.repository.storage.DefaultComponentMaintenanceImpl
 import org.sonatype.nexus.repository.storage.StorageFacet
 import org.sonatype.nexus.repository.storage.UnitOfWorkHandler
 import org.sonatype.nexus.repository.view.ConfigurableViewFacet
-import org.sonatype.nexus.repository.view.Context
-import org.sonatype.nexus.repository.view.Matcher
 import org.sonatype.nexus.repository.view.handlers.ConditionalRequestHandler
 import org.sonatype.nexus.repository.view.handlers.ContentHeadersHandler
 import org.sonatype.nexus.repository.view.handlers.ExceptionHandler
 import org.sonatype.nexus.repository.view.handlers.HandlerContributor
 import org.sonatype.nexus.repository.view.handlers.TimingHandler
-import org.sonatype.nexus.repository.view.matchers.ActionMatcher
-import org.sonatype.nexus.repository.view.matchers.logic.LogicMatchers
-import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher
-
-import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.DISCOVERY_PATH;
-import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.MODULES_PATH;
-import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.PROVIDERS_PATH;
-import static org.sonatype.nexus.repository.http.HttpMethods.GET
-import static org.sonatype.nexus.repository.http.HttpMethods.HEAD
 
 /**
  * Support for Terraform recipes.
@@ -110,64 +99,6 @@ abstract class TerraformRecipeSupport
 
   protected TerraformRecipeSupport(final Type type, final Format format) {
     super(type, format)
-  }
-
-  static Matcher discoveryMatcher() {
-    buildTokenMatcherForPatternAndAssetKind(
-            "/${DISCOVERY_PATH}",
-            AssetKind.DISCOVERY, GET, HEAD);
-  }
-
-  static Matcher modulesMatcher() {
-    buildTokenMatcherForPatternAndAssetKind(
-            "/${MODULES_PATH}",
-            AssetKind.MODULES, GET, HEAD);
-  }
-
-  static Matcher moduleVersionsMatcher() {
-    buildTokenMatcherForPatternAndAssetKind(
-            "/${MODULES_PATH}/{namespace}/{name}/{provider}/index.json",
-            AssetKind.MODULE_VERSIONS, GET, HEAD);
-  }
-
-  static Matcher providersMatcher() {
-    buildTokenMatcherForPatternAndAssetKind(
-            "/${PROVIDERS_PATH}",
-            AssetKind.PROVIDERS, GET, HEAD);
-  }
-
-  static Matcher providerVersionsMatcher() {
-    buildTokenMatcherForPatternAndAssetKind(
-            "/${PROVIDERS_PATH}/{hostname}/{namespace}/{type}/index.json",
-            AssetKind.PROVIDER_VERSIONS, GET, HEAD);
-  }
-
-  static Matcher providerVersionMatcher() {
-    buildTokenMatcherForPatternAndAssetKind(
-            "/${PROVIDERS_PATH}/{hostname}/{namespace}/{type}/{version}.json",
-            AssetKind.PROVIDER_VERSION, GET, HEAD);
-  }
-
-  static Matcher providerArchiveMatcher() {
-    buildTokenMatcherForPatternAndAssetKind(
-            "/${PROVIDERS_PATH}/{hostname}/{namespace}/{type}/{provider}-{type}_{version}_{os}_{arch}.zip",
-            AssetKind.PROVIDER_ARCHIVE, GET, HEAD);
-  }
-
-  static Matcher buildTokenMatcherForPatternAndAssetKind(final String pattern,
-                                                         final AssetKind assetKind,
-                                                         final String... actions) {
-    LogicMatchers.and(
-            new ActionMatcher(actions),
-            new TokenMatcher(pattern),
-            new Matcher() {
-              @Override
-              boolean matches(final Context context) {
-                context.attributes.set(AssetKind.class, assetKind)
-                return true
-              }
-            }
-    )
   }
 
 }

@@ -10,6 +10,7 @@ target/
 .mvn/timing.properties
 .mvn/extensions.xml
 .mvn/maven.config
+bin/
 
 # Intellij
 *.ipr

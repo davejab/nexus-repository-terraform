@@ -10,7 +10,7 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.plugins.terraform.internal.proxy
+package org.sonatype.nexus.plugins.terraform.orient.internal
 
 import javax.annotation.Nonnull
 import javax.inject.Inject
@@ -19,7 +19,11 @@ import javax.inject.Provider
 import javax.inject.Singleton
 
 import org.sonatype.nexus.plugins.terraform.internal.TerraformFormat
-import org.sonatype.nexus.plugins.terraform.internal.TerraformRecipeSupport
+import org.sonatype.nexus.plugins.terraform.internal.matcher.DiscoveryMatcher
+import org.sonatype.nexus.plugins.terraform.internal.matcher.ProviderArchiveMatcher
+import org.sonatype.nexus.plugins.terraform.internal.matcher.ProviderVersionMatcher
+import org.sonatype.nexus.plugins.terraform.internal.matcher.ProviderVersionsMatcher
+import org.sonatype.nexus.plugins.terraform.internal.matcher.ProvidersMatcher
 import org.sonatype.nexus.repository.Format
 import org.sonatype.nexus.repository.Repository
 import org.sonatype.nexus.repository.Type
@@ -90,13 +94,11 @@ class TerraformProxyRecipe
 
     // @todo Add matcher methods to this list
     [
-      discoveryMatcher(), 
-      modulesMatcher(), 
-      moduleVersionsMatcher(), 
-      providersMatcher(),
-      providerVersionsMatcher(),
-      providerVersionMatcher(),
-      providerArchiveMatcher()
+            new DiscoveryMatcher().matcher(),
+            new ProvidersMatcher().matcher(),
+            new ProviderVersionsMatcher().matcher(),
+            new ProviderVersionMatcher().matcher(),
+            new ProviderArchiveMatcher().matcher()
     ].each { matcher ->
       builder.route(new Route.Builder().matcher(matcher)
           .handler(timingHandler)

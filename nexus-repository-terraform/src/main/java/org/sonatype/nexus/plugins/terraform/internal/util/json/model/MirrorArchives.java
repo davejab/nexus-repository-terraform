@@ -2,7 +2,8 @@ package org.sonatype.nexus.plugins.terraform.internal.util.json.model;
 
 import java.util.HashMap;
 
-public class MirrorArchives {
+public class MirrorArchives
+{
 
   private HashMap<String,MirrorUrl> archives;
 

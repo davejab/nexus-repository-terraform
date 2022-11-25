@@ -10,18 +10,21 @@
  * of Sonatype, Inc. Apache Maven is a trademark of the Apache Software Foundation. M2eclipse is a trademark of the
  * Eclipse Foundation. All other trademarks are the property of their respective owners.
  */
-package org.sonatype.nexus.plugins.terraform.internal;
+package org.sonatype.nexus.plugins.terraform.internal.matcher;
+
+import static org.sonatype.nexus.plugins.terraform.internal.AssetKind.PROVIDER_ARCHIVE;
+import static org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils.PROVIDERS_PATH;
 
 /**
- * Asset kinds for Terraform.
+ * Provider archive path matcher
+ *
+ * @since 0.0.6
  */
-public enum AssetKind
+public class ProviderArchiveMatcher
+        extends TerraformMatcher
 {
-  DISCOVERY,
-  MODULES,
-  MODULE_VERSIONS,
-  PROVIDERS,
-  PROVIDER_VERSIONS,
-  PROVIDER_VERSION,
-  PROVIDER_ARCHIVE;
+  protected ProviderArchiveMatcher() {
+    super("/"+PROVIDERS_PATH+"/{hostname}/{namespace}/{type}/{provider}-{type}_{version}_{os}_{arch}.zip",
+            PROVIDER_ARCHIVE);
+  }
 }
