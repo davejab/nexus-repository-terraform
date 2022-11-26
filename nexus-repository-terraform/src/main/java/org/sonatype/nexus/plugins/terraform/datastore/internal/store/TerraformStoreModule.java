@@ -27,8 +27,7 @@ public class TerraformStoreModule
     extends FormatStoreModule<TerraformContentRepositoryDAO,
         TerraformComponentDAO,
         TerraformAssetDAO,
-        TerraformAssetBlobDAO,
-        TerraformSearchDAO>
+        TerraformAssetBlobDAO>
 {
   // nothing to add...
 }
