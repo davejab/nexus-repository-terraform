@@ -51,12 +51,6 @@
       <groupId>org.sonatype.nexus</groupId>
       <artifactId>nexus-rest-client</artifactId>
     </dependency>
-    <!-- CVE-2020-36518 -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.13.3</version>
-    </dependency>
     <!-- sonatype-2020-0926 -->
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -67,10 +61,21 @@
     Pax-Exam test driver - end
     -->
 
+    <!--
+    CVE-2022-42003
+    CVE-2022-42004
+    -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.13.4.1</version>
+    </dependency>
+
+    <!-- CVE-2020-17521 -->
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>2.4.21</version>
     </dependency>
 
     <!--
