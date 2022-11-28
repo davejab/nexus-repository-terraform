@@ -35,7 +35,7 @@ public class TerraformOrientProxyIT
   @Test
   public void retrieveDiscoveryJSONFromProxyWhenRemoteOnline() throws Exception {
     assertThat(status(proxyClient.get(DISCOVERY_PATH)), is(HttpStatus.OK));
-
+    assertThat(status(proxyClient.get(DISCOVERY_PATH)), is(HttpStatus.OK));
     final Asset asset = findAsset(proxyRepo, "/" + DISCOVERY_PATH);
     assertThat(asset.name(), is(equalTo("/" + DISCOVERY_PATH)));
     assertThat(asset.contentType(), is(equalTo(MIME_TYPE_JSON)));
@@ -45,7 +45,7 @@ public class TerraformOrientProxyIT
   @Test
   public void retrieveIndexJSONFromProxyWhenRemoteOnline() throws Exception {
     assertThat(status(proxyClient.get(PROVIDER_INDEX.replaceFirst("/", ""))), is(HttpStatus.OK));
-
+    assertThat(status(proxyClient.get(PROVIDER_INDEX.replaceFirst("/", ""))), is(HttpStatus.OK));
     final Asset asset = findAsset(proxyRepo, PROVIDER_INDEX);
     assertThat(asset.name(), is(equalTo(PROVIDER_INDEX)));
     assertThat(asset.contentType(), is(equalTo(MIME_TYPE_JSON)));
@@ -57,6 +57,7 @@ public class TerraformOrientProxyIT
 
   @Test
   public void retrieveVersionJSONFromProxyWhenRemoteOnline() throws Exception {
+    assertThat(status(proxyClient.get(PROVIDER_VERSION.replaceFirst("/", ""))), is(HttpStatus.OK));
     assertThat(status(proxyClient.get(PROVIDER_VERSION.replaceFirst("/", ""))), is(HttpStatus.OK));
     final Asset asset = findAsset(proxyRepo, PROVIDER_VERSION);
     assertThat(asset.name(), is(equalTo(PROVIDER_VERSION)));
@@ -71,7 +72,7 @@ public class TerraformOrientProxyIT
   @Test
   public void retrieveProviderZipFromProxyWhenRemoteOnline() throws Exception {
     assertThat(status(proxyClient.get(PROVIDER_ZIP.replaceFirst("/", ""))), is(HttpStatus.OK));
-
+    assertThat(status(proxyClient.get(PROVIDER_ZIP.replaceFirst("/", ""))), is(HttpStatus.OK));
     final Asset asset = findAsset(proxyRepo, PROVIDER_ZIP);
     assertThat(asset.name(), is(equalTo(PROVIDER_ZIP)));
     assertThat(asset.contentType(), is(equalTo(MIME_TYPE_ZIP)));
