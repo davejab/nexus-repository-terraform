@@ -37,7 +37,7 @@ public class TerraformDataStoreProxyIT
   @Test
   public void retrieveDiscoveryJSONFromProxyWhenRemoteOnline() throws Exception {
     assertThat(status(proxyClient.get(DISCOVERY_PATH)), is(HttpStatus.OK));
-
+    assertThat(status(proxyClient.get(DISCOVERY_PATH)), is(HttpStatus.OK));
     final Asset asset = findAsset(proxyRepo, "/" + DISCOVERY_PATH).get();
 
     assertThat(asset.path(), is(equalTo("/" + DISCOVERY_PATH)));
@@ -48,7 +48,7 @@ public class TerraformDataStoreProxyIT
   @Test
   public void retrieveIndexJSONFromProxyWhenRemoteOnline() throws Exception {
     assertThat(status(proxyClient.get(PROVIDER_INDEX.replaceFirst("/", ""))), is(HttpStatus.OK));
-
+    assertThat(status(proxyClient.get(PROVIDER_INDEX.replaceFirst("/", ""))), is(HttpStatus.OK));
     final Asset asset = findAsset(proxyRepo, PROVIDER_INDEX).get();
     assertThat(asset.path(), is(equalTo(PROVIDER_INDEX)));
 //    assertThat(asset.contentType(), is(equalTo(MIME_TYPE_JSON)));
@@ -61,6 +61,7 @@ public class TerraformDataStoreProxyIT
 
   @Test
   public void retrieveVersionJSONFromProxyWhenRemoteOnline() throws Exception {
+    assertThat(status(proxyClient.get(PROVIDER_VERSION.replaceFirst("/", ""))), is(HttpStatus.OK));
     assertThat(status(proxyClient.get(PROVIDER_VERSION.replaceFirst("/", ""))), is(HttpStatus.OK));
     final Asset asset = findAsset(proxyRepo, PROVIDER_VERSION).get();
     assertThat(asset.path(), is(equalTo(PROVIDER_VERSION)));
@@ -76,7 +77,7 @@ public class TerraformDataStoreProxyIT
   @Test
   public void retrieveProviderZipFromProxyWhenRemoteOnline() throws Exception {
     assertThat(status(proxyClient.get(PROVIDER_ZIP.replaceFirst("/", ""))), is(HttpStatus.OK));
-
+    assertThat(status(proxyClient.get(PROVIDER_ZIP.replaceFirst("/", ""))), is(HttpStatus.OK));
     final Asset asset = findAsset(proxyRepo, PROVIDER_ZIP).get();
     assertThat(asset.path(), is(equalTo(PROVIDER_ZIP)));
 //    assertThat(asset.contentType(), is(equalTo(MIME_TYPE_ZIP)));
@@ -89,6 +90,5 @@ public class TerraformDataStoreProxyIT
     assertThat(attributes.get("os"), is(equalTo(OS)));
     assertThat(attributes.get("arch"), is(equalTo(ARCH)));
   }
-
 
 }
