@@ -13,10 +13,10 @@
 package org.sonatype.nexus.plugins.terraform.datastore;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 
 import org.sonatype.nexus.common.hash.HashAlgorithm;
-import org.sonatype.nexus.plugins.terraform.internal.attributes.TerraformAttributes;
 import org.sonatype.nexus.repository.Facet;
 import org.sonatype.nexus.repository.content.facet.ContentFacet;
 import org.sonatype.nexus.repository.view.Content;
@@ -40,7 +40,7 @@ public interface TerraformContentFacet
 
   Optional<Content> get(String path) throws IOException;
 
-  Content put(String path, Payload content, TerraformAttributes attributes) throws IOException;
+  Content put(String path, Payload content, Map attributes) throws IOException;
 
   boolean delete(String path) throws IOException;
 }

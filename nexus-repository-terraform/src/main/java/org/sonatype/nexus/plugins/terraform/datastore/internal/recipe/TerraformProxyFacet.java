@@ -14,6 +14,7 @@ package org.sonatype.nexus.plugins.terraform.datastore.internal.recipe;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -21,15 +22,12 @@ import javax.inject.Named;
 
 import org.sonatype.nexus.plugins.terraform.datastore.TerraformContentFacet;
 import org.sonatype.nexus.plugins.terraform.internal.AssetKind;
-import org.sonatype.nexus.plugins.terraform.internal.attributes.TerraformAttributes;
 import org.sonatype.nexus.plugins.terraform.internal.util.TerraformDataUtils;
 import org.sonatype.nexus.plugins.terraform.internal.util.TerraformPathUtils;
 import org.sonatype.nexus.repository.content.facet.ContentProxyFacetSupport;
 import org.sonatype.nexus.repository.view.Content;
 import org.sonatype.nexus.repository.view.Context;
 import org.sonatype.nexus.repository.view.matchers.token.TokenMatcher;
-
-import static org.sonatype.nexus.plugins.terraform.internal.attributes.TerraformParser.parse;
 
 /**
  * Terraform proxy facet.
@@ -59,8 +57,10 @@ public class TerraformProxyFacet
   @Override
   protected Content store(final Context context, final Content payload) throws IOException {
     TokenMatcher.State matcherState = terraformPathUtils.matcherState(context);
-    AssetKind assetKind = context.getAttributes().require(AssetKind.class);
-    TerraformAttributes attributes = parse(assetKind, matcherState);
+    Map attributes = new HashMap<>();
+    for (String key : matcherState.getTokens().keySet()) {
+      attributes.put(key, matcherState.getTokens().get(key));
+    }
     return content().put(terraformPathUtils.getAssetPath(context), payload, attributes);
   }
 
