@@ -13,13 +13,13 @@
 package org.sonatype.nexus.plugins.terraform.datastore.internal.recipe;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.sonatype.nexus.plugins.terraform.datastore.TerraformContentFacet;
-import org.sonatype.nexus.plugins.terraform.internal.attributes.TerraformAttributes;
 import org.sonatype.nexus.plugins.terraform.internal.TerraformFormat;
 import org.sonatype.nexus.repository.content.facet.ContentFacet;
 import org.sonatype.nexus.repository.content.facet.ContentFacetSupport;
@@ -51,8 +51,9 @@ public class TerraformContentFacetImpl
   }
 
   @Override
-  public Content put(final String path, final Payload content, TerraformAttributes attributes) throws IOException {
+  public Content put(final String path, final Payload content, Map attributes) throws IOException {
     try (TempBlob blob = blobs().ingest(content, HASHING)){
+
       return assets()
           .path(path)
           .attributes(TerraformFormat.NAME, attributes)
